@@ -1,7 +1,7 @@
 import java.util.Objects;
 
 public class Task {
-    private static int globalId = 1;
+
     private int id;
     private String taskName;
     private String description;
@@ -11,13 +11,12 @@ public class Task {
         this.taskName = taskName;
         this.description = description;
         this.status = status;
-        id = globalId;
+        id = TaskManager.globalId;
 
     }
 
     public void setId(int id) {
         this.id = id;
-
     }
 
     public Status getStatus() {
@@ -26,10 +25,6 @@ public class Task {
 
     public void setStatus(Status status) {
         this.status = status;
-    }
-
-    public static void createNewId() {
-        globalId++;
     }
 
     public int getId() {
