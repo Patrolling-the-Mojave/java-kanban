@@ -12,7 +12,6 @@ public class Epic extends Task {
         return subtaskIds;
     }
 
-
     public void removeSubtask(Integer subtaskId) {
         if (subtaskIds.contains(subtaskId)) {
             subtaskIds.remove(subtaskId);
@@ -23,7 +22,7 @@ public class Epic extends Task {
     @Override
     public String toString() {
         return "EpicTask{" +
-                "Status=" + getStatus()+
+                "Status=" + getStatus() +
                 ", id=" + getId() +
                 ", subtaskIds=" + subtaskIds +
                 '}';

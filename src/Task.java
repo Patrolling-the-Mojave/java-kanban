@@ -5,14 +5,12 @@ public class Task {
     private int id;
     private String taskName;
     private String description;
-    protected Status status;
+    protected Status status; //не понял, что именно мне стоит поменять(
 
     public Task(String taskName, String description, Status status) {
         this.taskName = taskName;
         this.description = description;
         this.status = status;
-        id = TaskManager.globalId;
-
     }
 
     public void setId(int id) {
