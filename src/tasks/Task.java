@@ -1,3 +1,4 @@
+package tasks;
 import java.util.Objects;
 
 public class Task {
@@ -5,7 +6,7 @@ public class Task {
     private int id;
     private String taskName;
     private String description;
-    protected Status status; //не понял, что именно мне стоит поменять(
+    private Status status;
 
     public Task(String taskName, String description, Status status) {
         this.taskName = taskName;
@@ -43,7 +44,7 @@ public class Task {
 
     @Override
     public String toString() {
-        return "Task{" +
+        return "tasks.Task{" +
                 "id=" + id +
                 ", taskName='" + taskName + '\'' +
                 ", description='" + description + '\'' +
