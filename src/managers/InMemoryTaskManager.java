@@ -5,15 +5,19 @@ import tasks.*;
 import java.util.*;
 
 public class InMemoryTaskManager implements TaskManager {
-    private Managers managers = new Managers();
-    private HistoryManager historyManager = managers.getDefaultHistory();
+    private HistoryManager historyManager;
     private Map<Integer, Task> tasks = new HashMap<>();
     private Map<Integer, SubTask> subTasks = new HashMap<>();
     private Map<Integer, Epic> epics = new HashMap<>();
     private int globalId = 1;
 
-    public HistoryManager getHistoryManager() {
-        return historyManager;
+    public InMemoryTaskManager(HistoryManager historyManager) {
+        this.historyManager = historyManager;
+    }
+
+    @Override
+    public List<Task> getHistory() {
+        return historyManager.getHistory();
     }
 
     @Override
