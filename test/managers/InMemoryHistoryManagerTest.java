@@ -1,6 +1,5 @@
-import managers.HistoryManager;
-import managers.Managers;
-import managers.TaskManager;
+package managers;
+
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -24,7 +23,7 @@ public class InMemoryHistoryManagerTest {
     }
 
     @Test
-    public void add_ShouldAddTaskToHistory_IfCalledGetByIdMethod() {
+    public void add_AddTaskToHistory_IfCalledGetByIdMethod() {
         Task task1 = new Task("n", "d", Status.NEW);
         taskManager.createNewTask(task1);
         Epic epic = new Epic("n", "d", Status.NEW);
@@ -45,7 +44,7 @@ public class InMemoryHistoryManagerTest {
     }
 
     @Test
-    public void add_ShouldRemoveFirstElement_IfHistoryIsFull() {
+    public void add_RemoveFirstElement_IfHistoryIsFull() {
 
         Task task1 = buildTask();
         taskManager.createNewTask(task1);

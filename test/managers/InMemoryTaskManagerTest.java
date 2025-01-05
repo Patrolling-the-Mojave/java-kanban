@@ -1,6 +1,5 @@
-import managers.InMemoryTaskManager;
-import managers.Managers;
-import managers.TaskManager;
+package managers;
+
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -68,7 +67,7 @@ public class InMemoryTaskManagerTest {
     }
 
     @Test
-    public void getSubTasksByEpicId_ShouldReturnSubtasksListOfEpic() {
+    public void getSubTasksByEpicId_ReturnSubtasksListOfEpic() {
         Epic epic = new Epic("epic", "d", Status.NEW);
         taskManager.createNewEpic(epic);
         SubTask subTask1 = new SubTask("sub1", "desc1", Status.NEW, 1);
@@ -84,7 +83,7 @@ public class InMemoryTaskManagerTest {
     }
 
     @Test
-    public void removeEpicById_ShouldDeleteSubtasksWhenDeletingTheirEpic() {
+    public void removeEpicById_DeleteSubtasksWhenDeletingTheirEpic() {
         Epic epic = new Epic("epic1", "desc1", Status.NEW);
         taskManager.createNewEpic(epic);
 
@@ -99,7 +98,7 @@ public class InMemoryTaskManagerTest {
     }
 
     @Test
-    public void getTasks_ShouldReturnTasksList() {
+    public void getTasks_ReturnTasksList() {
         Task task = new Task("task", "description", Status.NEW);
         taskManager.createNewTask(task);
 
@@ -109,7 +108,7 @@ public class InMemoryTaskManagerTest {
     }
 
     @Test
-    public void getSubTasks_ShouldReturnSubtasksList() {
+    public void getSubTasks_ReturnSubtasksList() {
         Epic epic = new Epic("epic", "descriotion", Status.NEW);
         taskManager.createNewEpic(epic);
         SubTask subTask = new SubTask("subtask", "description", Status.NEW, 1);
@@ -121,7 +120,7 @@ public class InMemoryTaskManagerTest {
     }
 
     @Test
-    public void getEpics_ShouldReturnEpicsList() {
+    public void getEpics_ReturnEpicsList() {
         Epic epic = new Epic("epic", "descriotion", Status.NEW);
         taskManager.createNewEpic(epic);
 
@@ -132,7 +131,7 @@ public class InMemoryTaskManagerTest {
 
 
     @Test
-    public void updateEpicStatus_ShouldChangeStatusWhenAddingASubTask() {
+    public void updateEpicStatus_ChangeStatusWhenAddingASubTask() {
         Epic epic = new Epic("epic", "d", Status.NEW);
         taskManager.createNewEpic(epic);
 
