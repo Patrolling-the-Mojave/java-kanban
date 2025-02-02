@@ -2,17 +2,20 @@ package managers;
 
 import tasks.Task;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 public class InMemoryHistoryManager implements HistoryManager {
     private Node tail;
     private Node head;
     private int size = 0;
-    private final Map<Integer, Node<Task>> nodes = new HashMap<>();
+    private final Map<Integer, Node> nodes = new HashMap<>();
 
     @Override
     public void add(Task task) {
-        if (nodes.containsKey(task.getId())){
+        if (nodes.containsKey(task.getId())) {
             removeNode(nodes.get(task.getId()));
             addLastNode(nodes.get(task.getId()));
         } else {
@@ -32,27 +35,27 @@ public class InMemoryHistoryManager implements HistoryManager {
 
     @Override
     public List<Task> getHistory() {
-       List<Task> tasks = new ArrayList<>();
-       Node currentNode = head;
-       for(int i = 0; i<nodes.size(); i++){
-           tasks.add(currentNode.getTask());
-           currentNode = currentNode.getNext();
-       }
-       return tasks;
+        List<Task> tasks = new ArrayList<>();
+        Node currentNode = head;
+        for (int i = 0; i < nodes.size(); i++) {
+            tasks.add(currentNode.getTask());
+            currentNode = currentNode.getNext();
+        }
+        return tasks;
     }
 
     private void removeNode(Node node) {
-        if (node.getPrev()==null){
+        if (node.getPrev() == null) {
             head = node.getNext();
-            if(head!=null){
+            if (head != null) {
                 head.setPrev(null);
             } else {
                 tail = null;
             }
 
-        } else if(node.getNext() == null){
+        } else if (node.getNext() == null) {
             tail = node.getPrev();
-            if(tail!=null){
+            if (tail != null) {
                 tail.setNext(null);
             } else {
                 head = null;
@@ -66,15 +69,15 @@ public class InMemoryHistoryManager implements HistoryManager {
 
     }
 
-    public void addLastNode(Node node){
-        if(head == null && tail == null){ //если в списке нет элементов, то первый элемент будет и первым и последним
+    public void addLastNode(Node node) {
+        if (head == null && tail == null) { //если в списке нет элементов, то первый элемент будет и первым и последним
             head = node;
             tail = node;
-        } else if(head == tail){ //если в списке один элемент, нужно изменить tail и указатель next у head
+        } else if (head == tail) { //если в списке один элемент, нужно изменить tail и указатель next у head
             node.setPrev(tail);
             head.setNext(node);
             tail = node;
-        } else{
+        } else {
             tail.setNext(node); // в остальных случаях необходимо лишь поменять tail на новый узел(с заменой указателей)
             node.setPrev(tail);
             tail = node;
