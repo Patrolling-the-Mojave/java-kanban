@@ -2,12 +2,12 @@ package managers;
 
 import tasks.Task;
 
-public class Node<T> {
+public class Node {
     private Task task;
     private Node prev;
     private Node next;
 
-    public Node(Task task){
+    public Node(Task task) {
         this.task = task;
     }
 
