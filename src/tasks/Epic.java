@@ -15,10 +15,7 @@ public class Epic extends Task {
     }
 
     public void removeSubtask(Integer subtaskId) {
-        if (subtaskIds.contains(subtaskId)) {
-            subtaskIds.remove(subtaskId);
-        }
-
+        subtaskIds.remove(subtaskId);
     }
 
     @Override
