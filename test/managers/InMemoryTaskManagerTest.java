@@ -14,10 +14,12 @@ import java.util.Objects;
 
 public class InMemoryTaskManagerTest {
     private TaskManager taskManager;
+    private HistoryManager historyManager;
 
     @BeforeEach
     public void setTaskManager() {
-        taskManager = new InMemoryTaskManager(Managers.getDefaultHistory());
+        historyManager = Managers.getDefaultHistory();
+        taskManager = new InMemoryTaskManager(historyManager);
     }
 
     public Task buildTask() {
@@ -142,6 +144,48 @@ public class InMemoryTaskManagerTest {
         SubTask subTask1 = new SubTask("sub1", "desc1", Status.DONE, 1);
         taskManager.createNewSubTask(subTask1);
         Assertions.assertEquals(Status.IN_PROGRESS, epic.getStatus());
+    }
+
+    @Test
+    public void remove_removeTaskFormHistory_IfDeleteHisId() {
+        Task task1 = new Task("n", "d", Status.NEW);
+        taskManager.createNewTask(task1);
+        Epic epic1 = new Epic("n", "d", Status.NEW);
+        taskManager.createNewEpic(epic1);
+        SubTask subTask1 = new SubTask("n", "d", Status.NEW, 2);
+        taskManager.createNewSubTask(subTask1);
+
+        taskManager.getTaskById(1);
+        taskManager.getSubtaskById(3);
+        taskManager.getEpicById(2);
+
+        taskManager.removeTaskById(1);
+        taskManager.removeSubtaskById(3);
+
+        List<Task> tasks = new ArrayList<>(List.of(epic1));
+
+        Assertions.assertEquals(tasks, historyManager.getHistory());
+    }
+
+    @Test
+    public void delete_deleteSubtaskFromHistory_ifDeleteHisEpic() {
+        Epic epic1 = new Epic("n", "d", Status.NEW);
+        taskManager.createNewEpic(epic1);
+        SubTask subTask1 = new SubTask("n", "d", Status.NEW, 1);
+        taskManager.createNewSubTask(subTask1);
+        SubTask subTask2 = new SubTask("n", "d", Status.DONE, 1);
+        taskManager.createNewSubTask(subTask2);
+        Task task1 = new Task("n", "d", Status.NEW);
+        taskManager.createNewTask(task1);
+
+        taskManager.getEpicById(1);
+        taskManager.getSubtaskById(2);
+        taskManager.getSubtaskById(3);
+        taskManager.getTaskById(4);
+
+        taskManager.removeEpicById(1);
+
+        Assertions.assertEquals(1, historyManager.getSize());
     }
 
 
