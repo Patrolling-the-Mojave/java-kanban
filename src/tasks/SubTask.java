@@ -2,7 +2,7 @@ package tasks;
 
 public class SubTask extends Task {
     private int epicId;
-    private final static TaskType type = TaskType.SUBTASK;
+    private static final TaskType type = TaskType.SUBTASK;
 
     public int getEpicId() {
         return epicId;
