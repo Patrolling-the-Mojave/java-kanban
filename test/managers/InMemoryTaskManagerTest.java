@@ -17,7 +17,7 @@ public class InMemoryTaskManagerTest {
     private HistoryManager historyManager;
 
     @BeforeEach
-    public void setTaskManager() {
+    void setTaskManager() {
         historyManager = Managers.getDefaultHistory();
         taskManager = new InMemoryTaskManager(historyManager);
     }
@@ -27,7 +27,7 @@ public class InMemoryTaskManagerTest {
     }
 
     @Test
-    public void tasksWithEqualIdShouldBeEqual() {
+    void tasksWithEqualIdShouldBeEqual() {
         Task task1 = buildTask();
         taskManager.createNewTask(task1);
 
@@ -40,7 +40,7 @@ public class InMemoryTaskManagerTest {
     }
 
     @Test
-    public void subTasksWithEqualIdShouldBeEqual() {
+    void subTasksWithEqualIdShouldBeEqual() {
         Epic epic = new Epic("epicName", "desc", Status.NEW);
         taskManager.createNewEpic(epic);
 
@@ -56,7 +56,7 @@ public class InMemoryTaskManagerTest {
     }
 
     @Test
-    public void epicsWithEqualIdShouldBeEqual() {
+    void epicsWithEqualIdShouldBeEqual() {
         Epic epic1 = new Epic("name1", "desc1", Status.NEW);
         taskManager.createNewEpic(epic1);
 
@@ -69,7 +69,7 @@ public class InMemoryTaskManagerTest {
     }
 
     @Test
-    public void getSubTasksByEpicId_ReturnSubtasksListOfEpic() {
+    void getSubTasksByEpicId_ReturnSubtasksListOfEpic() {
         Epic epic = new Epic("epic", "d", Status.NEW);
         taskManager.createNewEpic(epic);
         SubTask subTask1 = new SubTask("sub1", "desc1", Status.NEW, 1);
@@ -85,7 +85,7 @@ public class InMemoryTaskManagerTest {
     }
 
     @Test
-    public void removeEpicById_DeleteSubtasksWhenDeletingTheirEpic() {
+    void removeEpicById_DeleteSubtasksWhenDeletingTheirEpic() {
         Epic epic = new Epic("epic1", "desc1", Status.NEW);
         taskManager.createNewEpic(epic);
 
@@ -100,7 +100,7 @@ public class InMemoryTaskManagerTest {
     }
 
     @Test
-    public void getTasks_ReturnTasksList() {
+    void getTasks_ReturnTasksList() {
         Task task = new Task("task", "description", Status.NEW);
         taskManager.createNewTask(task);
 
@@ -110,7 +110,7 @@ public class InMemoryTaskManagerTest {
     }
 
     @Test
-    public void getSubTasks_ReturnSubtasksList() {
+    void getSubTasks_ReturnSubtasksList() {
         Epic epic = new Epic("epic", "descriotion", Status.NEW);
         taskManager.createNewEpic(epic);
         SubTask subTask = new SubTask("subtask", "description", Status.NEW, 1);
@@ -122,7 +122,7 @@ public class InMemoryTaskManagerTest {
     }
 
     @Test
-    public void getEpics_ReturnEpicsList() {
+    void getEpics_ReturnEpicsList() {
         Epic epic = new Epic("epic", "descriotion", Status.NEW);
         taskManager.createNewEpic(epic);
 
@@ -133,7 +133,7 @@ public class InMemoryTaskManagerTest {
 
 
     @Test
-    public void updateEpicStatus_ChangeStatusWhenAddingASubTask() {
+    void updateEpicStatus_ChangeStatusWhenAddingASubTask() {
         Epic epic = new Epic("epic", "d", Status.NEW);
         taskManager.createNewEpic(epic);
 
@@ -147,7 +147,7 @@ public class InMemoryTaskManagerTest {
     }
 
     @Test
-    public void remove_removeTaskFormHistory_IfDeleteHisId() {
+    void remove_removeTaskFormHistory_IfDeleteHisId() {
         Task task1 = new Task("n", "d", Status.NEW);
         taskManager.createNewTask(task1);
         Epic epic1 = new Epic("n", "d", Status.NEW);
@@ -168,7 +168,7 @@ public class InMemoryTaskManagerTest {
     }
 
     @Test
-    public void delete_deleteSubtaskFromHistory_ifDeleteHisEpic() {
+    void delete_deleteSubtaskFromHistory_ifDeleteHisEpic() {
         Epic epic1 = new Epic("n", "d", Status.NEW);
         taskManager.createNewEpic(epic1);
         SubTask subTask1 = new SubTask("n", "d", Status.NEW, 1);

@@ -16,7 +16,7 @@ public class InMemoryHistoryManagerTest {
     private HistoryManager historyManager;
 
     @BeforeEach
-    public void setTaskManager() {
+    void setTaskManager() {
         historyManager = new InMemoryHistoryManager();
         taskManager = Managers.getDefault(historyManager);
     }
@@ -26,7 +26,7 @@ public class InMemoryHistoryManagerTest {
     }
 
     @Test
-    public void add_AddTaskToHistory_IfCalledGetByIdMethod() {
+    void add_AddTaskToHistory_IfCalledGetByIdMethod() {
         Task task1 = new Task("n", "d", Status.NEW);
         taskManager.createNewTask(task1);
         Epic epic = new Epic("n", "d", Status.NEW);
@@ -47,7 +47,7 @@ public class InMemoryHistoryManagerTest {
     }
 
     @Test
-    public void remove_RemoveTaskFromHistory_IfCalledRemoveMethodInHistoryManager() {
+    void remove_RemoveTaskFromHistory_IfCalledRemoveMethodInHistoryManager() {
         Task task1 = new Task("n", "d", Status.NEW);
         taskManager.createNewTask(task1);
         Epic epic = new Epic("n", "d", Status.NEW);
@@ -68,7 +68,7 @@ public class InMemoryHistoryManagerTest {
     }
 
     @Test
-    public void add_AddNodeOnTheTop_ifAlreadyInHistoryAndCalledGetMethod() {
+    void add_AddNodeOnTheTop_ifAlreadyInHistoryAndCalledGetMethod() {
         Task task1 = new Task("n", "d", Status.NEW);
         taskManager.createNewTask(task1);
         Epic epic1 = new Epic("n", "d", Status.NEW);
@@ -87,7 +87,7 @@ public class InMemoryHistoryManagerTest {
     }
 
     @Test
-    public void increase_sizeWillIncrease_ifNodeISCreated() {
+    void increase_sizeWillIncrease_ifNodeISCreated() {
         Task task1 = new Task("n", "d", Status.NEW);
         taskManager.createNewTask(task1);
         Epic epic1 = new Epic("n", "d", Status.NEW);

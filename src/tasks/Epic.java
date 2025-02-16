@@ -1,9 +1,10 @@
 package tasks;
 
-import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.Set;
 
 public class Epic extends Task {
-    private ArrayList<Integer> subtaskIds = new ArrayList<>();
+    private Set<Integer> subtaskIds = new HashSet<>();
     private static final TaskType type = TaskType.EPIC;
 
     public Epic(String taskName, String description, Status status) {
@@ -11,7 +12,7 @@ public class Epic extends Task {
 
     }
 
-    public ArrayList<Integer> getSubtaskIds() {
+    public Set<Integer> getSubtaskIds() {
         return subtaskIds;
     }
 

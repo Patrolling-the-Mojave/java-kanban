@@ -1,7 +1,6 @@
 package managers;
 
 import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
@@ -14,6 +13,7 @@ import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.nio.file.Files;
 import java.nio.file.Path;
 
 import static java.nio.charset.StandardCharsets.UTF_8;
@@ -26,16 +26,10 @@ public class FileBackedTaskManagerTest {
     @TempDir
     static Path tempDir;
 
-    @BeforeAll
-    static void fileSetup() {
-        savedData = tempDir.resolve("saveData.csv");
-    }
-
     @BeforeEach
     void resetManagers() throws IOException {
-        historyManager = Managers.getDefaultHistory();
-        taskManager = new FileBackedTaskManager(historyManager, savedData);
-
+        savedData = Files.createTempFile(tempDir, "tempFile", ".csv");
+        taskManager = FileBackedTaskManager.loadFromFile(savedData.toFile());
     }
 
     @Test
@@ -176,6 +170,23 @@ public class FileBackedTaskManagerTest {
         Task task = new Task("anotherTask", "d1", Status.NEW);
         taskManager.createNewTask(task);
         Assertions.assertEquals(task, taskManager.getTaskById(2)); //getNewId() ищет первый свободный id - 2
+    }
+
+    @Test
+    void subtaskUpdate_shouldntAddIdMoreThanOnce() {
+        Epic epic = new Epic("e1", "d1", Status.NEW);
+        taskManager.createNewEpic(epic);
+        SubTask subTask = new SubTask("s1", "d1", Status.NEW, 1);
+        taskManager.createNewSubTask(subTask);
+
+        SubTask subTask2 = new SubTask("s2", "d1", Status.NEW, 1);
+        subTask2.setId(2);
+        taskManager.updateSubtask(subTask2);
+
+        SubTask subTask3 = new SubTask("s3", "d1", Status.NEW, 1);
+        subTask3.setId(2);
+        taskManager.updateSubtask(subTask3);
+        Assertions.assertEquals(1, epic.getSubtaskIds().size());
     }
 
 }
