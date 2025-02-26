@@ -12,9 +12,9 @@ import java.util.Map;
 
 public class InMemoryTaskManager implements TaskManager {
     private HistoryManager historyManager;
-    private Map<Integer, Task> tasks = new HashMap<>();
-    private Map<Integer, SubTask> subTasks = new HashMap<>();
-    private Map<Integer, Epic> epics = new HashMap<>();
+    protected Map<Integer, Task> tasks = new HashMap<>();
+    protected Map<Integer, SubTask> subTasks = new HashMap<>();
+    protected Map<Integer, Epic> epics = new HashMap<>();
     private int globalId = 1;
 
     public InMemoryTaskManager(HistoryManager historyManager) {
@@ -32,7 +32,11 @@ public class InMemoryTaskManager implements TaskManager {
     }
 
     private int getNewId() {
-        return globalId++;
+        if (!(tasks.containsKey(globalId) || subTasks.containsKey(globalId) || epics.containsKey(globalId))) {
+            return globalId;
+        }
+        globalId++;
+        return getNewId();
     }
 
     @Override
@@ -130,6 +134,7 @@ public class InMemoryTaskManager implements TaskManager {
     @Override
     public void updateSubtask(SubTask updatedSubtask) {
         subTasks.put(updatedSubtask.getId(), updatedSubtask);
+        epics.get(updatedSubtask.getEpicId()).getSubtaskIds().add(updatedSubtask.getId());
         updateEpicStatus(epics.get(updatedSubtask.getEpicId()));
     }
 
@@ -139,7 +144,7 @@ public class InMemoryTaskManager implements TaskManager {
         updateEpicStatus(epic);
     }
 
-    private void updateEpicStatus(Epic epic) {
+    protected void updateEpicStatus(Epic epic) {
         boolean isNewTask = true;
         boolean isDoneTask = true;
         for (int subTaskId : epic.getSubtaskIds()) {
