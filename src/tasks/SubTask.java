@@ -8,28 +8,27 @@ public class SubTask extends Task {
         return epicId;
     }
 
-    public SubTask(String taskName, String description, Status status, int epicId) {
-        super(taskName, description, status);
+    public SubTask(String taskName, String description, Status status, int epicId, int duration, String startTime) {
+        super(taskName, description, status, duration, startTime);
         this.epicId = epicId;
     }
 
     @Override
     public String toString() {
         return "SubTask{" +
-                "id=" + getId() +
+                "taskName='" + taskName + '\'' +
+                ", status=" + status +
+                ", startTime=" + startTime.format(FORMATTER) +
+                ", id=" + id +
+                ", duration=" + duration.toMinutes() +
+                ", description='" + description + '\'' +
                 ", epicId=" + epicId +
                 '}';
     }
 
     @Override
-    public TaskType getType() {
-        return type;
-    }
-
-    @Override
     public String convertToCSV() {
-        return String.format("%d,%s,%s,%s,%s,%d", id, type, taskName, status, description, epicId);
+        return String.format("%d,%s,%s,%s,%s,%d,%d,%s", id, type, taskName, status, description, epicId, duration.toMinutes(), startTime);
     }
-
 
 }

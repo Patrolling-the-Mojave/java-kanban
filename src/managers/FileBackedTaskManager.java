@@ -33,7 +33,7 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
                 List<String> taskInfo = new ArrayList<>(Arrays.asList(bufferedReader.readLine().split(",")));
                 switch (taskInfo.get(1)) {
                     case "TASK":
-                        Task task = new Task(taskInfo.get(2), taskInfo.get(4), Status.valueOf(taskInfo.get(3)));
+                        Task task = new Task(taskInfo.get(2), taskInfo.get(4), Status.valueOf(taskInfo.get(3)), Integer.parseInt(taskInfo.get(5)), taskInfo.get(6));
                         task.setId(Integer.parseInt(taskInfo.get(0)));
                         fileBackedTaskManager.addTask(task);
                         break;
@@ -43,7 +43,7 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
                         fileBackedTaskManager.addEpic(epic);
                         break;
                     case "SUBTASK":
-                        SubTask subTask = new SubTask(taskInfo.get(2), taskInfo.get(4), Status.valueOf(taskInfo.get(3)), Integer.parseInt(taskInfo.get(5)));
+                        SubTask subTask = new SubTask(taskInfo.get(2), taskInfo.get(4), Status.valueOf(taskInfo.get(3)), Integer.parseInt(taskInfo.get(5)), Integer.parseInt(taskInfo.get(6)), taskInfo.get(7));
                         subTask.setId(Integer.parseInt(taskInfo.get(0)));
                         fileBackedTaskManager.addSubTask(subTask);
                         break;
@@ -115,12 +115,14 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
     private void addEpic(Epic epic) {
         epics.put(epic.getId(), epic);
         updateEpicStatus(epic);
+        setEpicTime(epic);
     }
 
     private void addSubTask(SubTask subTask) {
         subTasks.put(subTask.getId(), subTask);
         epics.get(subTask.getEpicId()).getSubtaskIds().add(subTask.getId());
         updateEpicStatus(epics.get(subTask.getEpicId()));
+        setEpicTime(epics.get(subTask.getEpicId()));
     }
 
     @Override
@@ -167,13 +169,13 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
         Path path = Files.createTempFile(currentDir, "tempFile", ".csv");
         TaskManager taskManager = FileBackedTaskManager.loadFromFile(path.toFile());
 
-        Task task = new Task("n", "d", Status.NEW);
+        Task task = new Task("n", "d", Status.NEW, 5, "2019-01-23T22:20:21.413486");
         taskManager.createNewTask(task);
         Epic epic = new Epic("n", "d", Status.NEW);
         taskManager.createNewEpic(epic);
-        SubTask subTask = new SubTask("n", "d", Status.NEW, epic.getId());
+        SubTask subTask = new SubTask("n", "d", Status.NEW, epic.getId(), 5, "2020-01-23T22:20:21.413486");
         taskManager.createNewSubTask(subTask);
-        SubTask subTask2 = new SubTask("n2", "d2", Status.DONE, 2);
+        SubTask subTask2 = new SubTask("n2", "d2", Status.DONE, 2, 999, "2026-01-23T22:20:21.413486");
         taskManager.createNewSubTask(subTask2);
 
         TaskManager newTaskManager = FileBackedTaskManager.loadFromFile(path.toFile());
@@ -181,7 +183,6 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
         System.out.println(newTaskManager.getTasks());
         System.out.println(newTaskManager.getEpics());
         System.out.println(newTaskManager.getSubTasks());
-
         Files.delete(path);
     }
 
