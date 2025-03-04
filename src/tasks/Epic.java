@@ -11,11 +11,15 @@ public class Epic extends Task {
 
     public Epic(String taskName, String description, Status status) {
         super(taskName, description, status, 0, LocalDateTime.now().toString());
-
     }
 
     public void setEndTime(LocalDateTime endTime) {
         this.endTime = endTime;
+    }
+
+    @Override
+    public LocalDateTime getEndTime() {
+        return endTime;
     }
 
     public void setSubtaskIds(Set<Integer> subtaskIds) {

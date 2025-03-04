@@ -1,5 +1,7 @@
 package tasks;
 
+import exceptions.TaskTimeException;
+
 import java.time.Duration;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
@@ -27,7 +29,13 @@ public class Task {
     }
 
     public LocalDateTime getEndTime() {
-        return startTime.plus(duration);
+        LocalDateTime endTime;
+        try {
+            endTime = startTime.plus(duration);
+        } catch (NullPointerException ex) {
+            throw new TaskTimeException("время старта не задано");
+        }
+        return endTime;
     }
 
     public void setDuration(long durationInMinutes) {

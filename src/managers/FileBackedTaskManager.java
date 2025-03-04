@@ -25,7 +25,7 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
         this.path = path;
     }
 
-    public static FileBackedTaskManager loadFromFile(File file) {
+    public static FileBackedTaskManager loadFromFile(File file) throws ManagerSaveException {
         FileBackedTaskManager fileBackedTaskManager = new FileBackedTaskManager(Managers.getDefaultHistory(), file.toPath());
         try (BufferedReader bufferedReader = new BufferedReader(new FileReader(file, UTF_8))) {
             bufferedReader.readLine();
@@ -50,12 +50,12 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
                 }
             }
         } catch (IOException exception) {
-            throw new ManagerSaveException("ошибка считывания данных из файла");
+            throw new ManagerSaveException("ошибка считывания данных из файла", exception);
         }
         return fileBackedTaskManager;
     }
 
-    private void save() {
+    private void save() throws ManagerSaveException {
         try (FileWriter fileWriter = new FileWriter(path.toFile(), UTF_8)) {
             fileWriter.write("id,type,name,status,description,epic\n");
             for (Task task : getTasks()) {
@@ -68,7 +68,7 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
                 fileWriter.write(subTask.convertToCSV() + "\n");
             }
         } catch (IOException exception) {
-            throw new ManagerSaveException("ошибка сохранения файла");
+            throw new ManagerSaveException("ошибка сохранения файла", exception);
         }
     }
 

@@ -1,5 +1,6 @@
 package managers;
 
+import exceptions.ManagerSaveException;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -16,7 +17,6 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.time.LocalDateTime;
-import java.util.List;
 import java.util.Set;
 
 import static java.nio.charset.StandardCharsets.UTF_8;
@@ -36,11 +36,11 @@ public class FileBackedTaskManagerTest extends TaskManagerTest<FileBackedTaskMan
 
     @Test
     void add_addTasksToFile_IfTaskIsCreated() {
-        Task task = new Task("n", "d", Status.NEW,5, "2023-01-23T23:20:21.413486");
+        Task task = new Task("n", "d", Status.NEW, 5, "2023-01-23T23:20:21.413486");
         taskManager.createNewTask(task);
         Epic epic = new Epic("n", "d", Status.NEW);
         taskManager.createNewEpic(epic);
-        SubTask subTask = new SubTask("n", "d", Status.NEW, 2,5,"2025-01-23T23:20:21.413486");
+        SubTask subTask = new SubTask("n", "d", Status.NEW, 2, 5, "2025-01-23T23:20:21.413486");
         taskManager.createNewSubTask(subTask);
         try (BufferedReader bufferedReader = new BufferedReader(
                 new FileReader(savedData.toFile(), UTF_8))) {
@@ -56,17 +56,17 @@ public class FileBackedTaskManagerTest extends TaskManagerTest<FileBackedTaskMan
 
     @Test
     void add_addTasksToFile_IfTaskIsUpdated() {
-        Task task = new Task("n", "d", Status.NEW,5, "2025-01-23T23:20:21.413486");
+        Task task = new Task("n", "d", Status.NEW, 5, "2025-01-23T23:20:21.413486");
         taskManager.createNewTask(task);
         Epic epic = new Epic("n", "d", Status.NEW);
         taskManager.createNewEpic(epic);
-        SubTask subTask = new SubTask("n", "d", Status.NEW, 2,5,"2020-01-23T23:20:21.413486");
+        SubTask subTask = new SubTask("n", "d", Status.NEW, 2, 5, "2020-01-23T23:20:21.413486");
         taskManager.createNewSubTask(subTask);
 
-        Task newTask = new Task("n2", "d2", Status.DONE,10, "2023-01-23T23:20:21.413486");
+        Task newTask = new Task("n2", "d2", Status.DONE, 10, "2023-01-23T23:20:21.413486");
         newTask.setId(1);
         taskManager.updateTask(newTask);
-        SubTask newSubTask = new SubTask("n2", "d2", Status.DONE, 2,10,"2021-01-23T23:20:21.413486");
+        SubTask newSubTask = new SubTask("n2", "d2", Status.DONE, 2, 10, "2021-01-23T23:20:21.413486");
         newSubTask.setId(3);
         taskManager.updateSubtask(newSubTask);
         Epic newEpic = new Epic("n2", "d2", Status.DONE);
@@ -88,11 +88,11 @@ public class FileBackedTaskManagerTest extends TaskManagerTest<FileBackedTaskMan
 
     @Test
     void remove_removeTaskFromFile_ifCalledRemoveMethod() {
-        Task task = new Task("n", "d", Status.NEW,5, "2021-01-23T23:20:21.413486");
+        Task task = new Task("n", "d", Status.NEW, 5, "2021-01-23T23:20:21.413486");
         taskManager.createNewTask(task);
         Epic epic = new Epic("n", "d", Status.NEW);
         taskManager.createNewEpic(epic);
-        SubTask subTask = new SubTask("n", "d", Status.NEW, 2,5,"2022-01-23T23:20:21.413486");
+        SubTask subTask = new SubTask("n", "d", Status.NEW, 2, 5, "2022-01-23T23:20:21.413486");
         taskManager.createNewSubTask(subTask);
         Task task2 = new Task("n2", "d2", Status.DONE, 10, "2025-01-23T23:20:21.413486");
         taskManager.createNewTask(task2);
@@ -109,14 +109,14 @@ public class FileBackedTaskManagerTest extends TaskManagerTest<FileBackedTaskMan
     }
 
     @Test
-    void remove_removeTasks_ifCalledRemoveAllMethod() {
-        Task task = new Task("n", "d", Status.NEW,5, "2025-01-23T23:20:21.413486");
+    void remove_removeTasks_ifCalledRemoveAllMethod() throws ManagerSaveException {
+        Task task = new Task("n", "d", Status.NEW, 5, "2025-01-23T23:20:21.413486");
         taskManager.createNewTask(task);
         Epic epic = new Epic("n", "d", Status.NEW);
         taskManager.createNewEpic(epic);
-        SubTask subTask = new SubTask("n", "d", Status.NEW, 2,5,"2020-01-23T23:20:21.413486");
+        SubTask subTask = new SubTask("n", "d", Status.NEW, 2, 5, "2020-01-23T23:20:21.413486");
         taskManager.createNewSubTask(subTask);
-        Task task2 = new Task("n2", "d2", Status.DONE,10, "2021-01-23T23:20:21.413486");
+        Task task2 = new Task("n2", "d2", Status.DONE, 10, "2021-01-23T23:20:21.413486");
         taskManager.createNewTask(task2);
 
         taskManager.removeAllTasks();
@@ -136,7 +136,7 @@ public class FileBackedTaskManagerTest extends TaskManagerTest<FileBackedTaskMan
     }
 
     @Test
-    void add_addTasksToTaskMapFromFile() {
+    void add_addTasksToTaskMapFromFile() throws ManagerSaveException {
         try (FileWriter fileWriter = new FileWriter(savedData.toFile(), UTF_8)) {
             fileWriter.write("id,type,name,status,description,epic,duration,startTime\n");
             fileWriter.write("3,TASK,t1,NEW,d1,10,2025-01-23T23:20:21.413486\n");
@@ -147,11 +147,11 @@ public class FileBackedTaskManagerTest extends TaskManagerTest<FileBackedTaskMan
         } catch (IOException e) {
             e.printStackTrace();
         }
-        Task task = new Task("t1", "d1", Status.NEW,10,"2025-01-23T23:20:21.413486");
+        Task task = new Task("t1", "d1", Status.NEW, 10, "2025-01-23T23:20:21.413486");
         task.setId(3);
         Epic epic = new Epic("e1", "d1", Status.NEW);
         epic.setId(4);
-        SubTask subTask = new SubTask("s1", "d1", Status.NEW, 4,15,"2025-01-23T23:20:21.413486");
+        SubTask subTask = new SubTask("s1", "d1", Status.NEW, 4, 15, "2025-01-23T23:20:21.413486");
         subTask.setId(6);
         FileBackedTaskManager fileBackedTaskManager = FileBackedTaskManager.loadFromFile(savedData.toFile());
         Assertions.assertEquals(task, fileBackedTaskManager.getTasks().get(0));
@@ -160,9 +160,8 @@ public class FileBackedTaskManagerTest extends TaskManagerTest<FileBackedTaskMan
     }
 
 
-
     @Test
-    void check_checkCollisionInTaskMap() {
+    void check_checkCollisionInTaskMap() throws ManagerSaveException {
         try (FileWriter fileWriter = new FileWriter(savedData.toFile(), UTF_8)) {
             fileWriter.write("id,type,name,status,description,epic,duration,startTime\n");
             fileWriter.write("1,TASK,t1,NEW,d1,10,2025-01-23T23:20:21.413486\n");
@@ -174,7 +173,7 @@ public class FileBackedTaskManagerTest extends TaskManagerTest<FileBackedTaskMan
             e.printStackTrace();
         }
         FileBackedTaskManager taskManager = FileBackedTaskManager.loadFromFile(savedData.toFile());
-        Task task = new Task("anotherTask", "d1", Status.NEW,10,"2025-01-23T23:20:21.413486");
+        Task task = new Task("anotherTask", "d1", Status.NEW, 10, "2025-01-23T23:20:21.413486");
         taskManager.createNewTask(task);
         Assertions.assertEquals(task, taskManager.getTaskById(2).get()); //getNewId() ищет первый свободный id - 2
     }
@@ -183,14 +182,14 @@ public class FileBackedTaskManagerTest extends TaskManagerTest<FileBackedTaskMan
     void subtaskUpdate_shouldntAddIdMoreThanOnce() {
         Epic epic = new Epic("e1", "d1", Status.NEW);
         taskManager.createNewEpic(epic);
-        SubTask subTask = new SubTask("s1", "d1", Status.NEW, 1,10,"2021-01-23T23:20:21.413486");
+        SubTask subTask = new SubTask("s1", "d1", Status.NEW, 1, 10, "2021-01-23T23:20:21.413486");
         taskManager.createNewSubTask(subTask);
 
-        SubTask subTask2 = new SubTask("s2", "d1", Status.NEW, 1,10,"2022-01-23T23:20:21.413486");
+        SubTask subTask2 = new SubTask("s2", "d1", Status.NEW, 1, 10, "2022-01-23T23:20:21.413486");
         subTask2.setId(2);
         taskManager.updateSubtask(subTask2);
 
-        SubTask subTask3 = new SubTask("s3", "d1", Status.NEW, 1,10,"2023-01-23T23:20:21.413486");
+        SubTask subTask3 = new SubTask("s3", "d1", Status.NEW, 1, 10, "2023-01-23T23:20:21.413486");
         subTask3.setId(2);
         taskManager.updateSubtask(subTask3);
         Assertions.assertEquals(1, epic.getSubtaskIds().size());
