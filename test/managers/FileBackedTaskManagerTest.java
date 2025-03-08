@@ -73,7 +73,6 @@ public class FileBackedTaskManagerTest extends TaskManagerTest<FileBackedTaskMan
         newEpic.setId(2);
         newEpic.setSubtaskIds(Set.of(newSubTask.getId()));
         taskManager.updateEpic(newEpic);
-        System.out.println(newEpic);
         try (BufferedReader bufferedReader = new BufferedReader(
                 new FileReader(savedData.toFile(), UTF_8))) {
             Assertions.assertEquals("id,type,name,status,description,epic", bufferedReader.readLine());
@@ -193,6 +192,40 @@ public class FileBackedTaskManagerTest extends TaskManagerTest<FileBackedTaskMan
         subTask3.setId(2);
         taskManager.updateSubtask(subTask3);
         Assertions.assertEquals(1, epic.getSubtaskIds().size());
+    }
+
+    @Test
+    void loadTask_loadUntimelyTaskFromFile() throws IOException {
+        try (FileWriter fileWriter = new FileWriter(savedData.toFile(), UTF_8)) {
+            fileWriter.write("id,type,name,status,description,epic,duration,startTime\n");
+            fileWriter.write("1,TASK,t1,NEW,d1\n");
+            fileWriter.write("4,EPIC,e1,NEW,d1\n");
+            fileWriter.write("6,SUBTASK,s1,NEW,d1,4\n");
+        }
+        FileBackedTaskManager taskManager = FileBackedTaskManager.loadFromFile(savedData.toFile());
+
+        Task task = new Task("t1", "d1", Status.NEW);
+        task.setId(1);
+
+        Epic epic = new Epic("e1", "d1", Status.NEW);
+        epic.setId(4);
+
+        SubTask subTask = new SubTask("s1", "d1", Status.NEW, 4);
+        subTask.setId(6);
+
+        Assertions.assertEquals(task, taskManager.getTaskById(1).get());
+        Assertions.assertEquals(epic, taskManager.getEpicById(4).get());
+        Assertions.assertEquals(subTask, taskManager.getSubtaskById(6).get());
+    }
+
+    @Test
+    void throwException_throwOverlappingTimeException_ifTimeIsIntersects() throws IOException {
+        try (FileWriter fileWriter = new FileWriter(savedData.toFile(), UTF_8)) {
+            fileWriter.write("id,type,name,status,description,epic,duration,startTime\n");
+            fileWriter.write("1,TASK,t1,NEW,d1,400,\n");
+            fileWriter.write("4,EPIC,e1,NEW,d1\n");
+            fileWriter.write("6,SUBTASK,s1,NEW,d1,4\n");
+        }
     }
 
 }

@@ -9,6 +9,7 @@ import tasks.Status;
 import tasks.SubTask;
 import tasks.Task;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -263,5 +264,48 @@ public abstract class TaskManagerTest<T extends TaskManager> {
         history.add(epic);
 
         Assertions.assertEquals(history, taskManager.getHistory());
+    }
+
+    @Test
+    void updateEpicTime_updateEpicTimeAfterAddingNewSubtaskWithStartTime() {
+        Epic epic = new Epic("epic", "epicDesc", Status.NEW);
+        taskManager.createNewEpic(epic);
+
+        SubTask subTask = new SubTask("name", "description", Status.DONE, 1);
+        taskManager.createNewSubTask(subTask);
+
+        SubTask subTask1 = new SubTask("name2", "desc2", Status.NEW, 1, 400, "2020-01-23T23:20:21.413486");
+        taskManager.createNewSubTask(subTask1);
+
+        Assertions.assertEquals(LocalDateTime.parse("2020-01-23T23:20:21.413486"), epic.getStartTime());
+    }
+
+    @Test
+    void updateEpicTime_updateEpicTimeAfterAddingTimeForSubtask() {
+        Epic epic = new Epic("epic", "epicDesc", Status.NEW);
+        taskManager.createNewEpic(epic);
+
+        SubTask subTask = new SubTask("name", "description", Status.DONE, 1);
+        taskManager.createNewSubTask(subTask);
+
+        SubTask subTask1 = new SubTask("name2", "desc2", Status.NEW, 1, 400, "2020-01-23T23:20:21.413486");
+        subTask1.setId(subTask.getId());
+        taskManager.updateSubtask(subTask1);
+        Assertions.assertEquals(LocalDateTime.parse("2020-01-23T23:20:21.413486"), epic.getStartTime());
+    }
+
+    @Test
+    void updateEpicTime_updateEpicTimeAfterDeletingSubtaskTime() {
+        Epic epic = new Epic("epic", "epicDesc", Status.NEW);
+        taskManager.createNewEpic(epic);
+
+        SubTask subTask1 = new SubTask("name2", "desc2", Status.NEW, 1, 400, "2020-01-23T23:20:21.413486");
+        taskManager.createNewSubTask(subTask1);
+
+        SubTask subTask = new SubTask("name", "description", Status.DONE, 1);
+        subTask.setId(subTask1.getId());
+        taskManager.updateSubtask(subTask);
+
+        Assertions.assertNull(epic.getStartTime());
     }
 }

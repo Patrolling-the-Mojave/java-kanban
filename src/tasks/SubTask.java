@@ -13,14 +13,19 @@ public class SubTask extends Task {
         this.epicId = epicId;
     }
 
+    public SubTask(String taskName, String description, Status status, int epicId) {
+        super(taskName, description, status);
+        this.epicId = epicId;
+    }
+
     @Override
     public String toString() {
         return "SubTask{" +
                 "taskName='" + taskName + '\'' +
                 ", status=" + status +
-                ", startTime=" + startTime.format(FORMATTER) +
+                ", startTime=" + (startTime != null ? startTime.format(FORMATTER) : "не задано") +
                 ", id=" + id +
-                ", duration=" + duration.toMinutes() +
+                ", duration=" + (duration != null ? duration.toMinutes() : "не задано") +
                 ", description='" + description + '\'' +
                 ", epicId=" + epicId +
                 '}';
@@ -28,6 +33,9 @@ public class SubTask extends Task {
 
     @Override
     public String convertToCSV() {
+        if (startTime == null) {
+            return String.format("%d,%s,%s,%s,%s,%d", id, type, taskName, status, description, epicId);
+        }
         return String.format("%d,%s,%s,%s,%s,%d,%d,%s", id, type, taskName, status, description, epicId, duration.toMinutes(), startTime);
     }
 

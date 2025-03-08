@@ -28,9 +28,9 @@ public class InMemoryTaskManagerTest extends TaskManagerTest<InMemoryTaskManager
         Epic epic = new Epic("epic1", "desc1", Status.NEW);
         taskManager.createNewEpic(epic);
 
-        SubTask subTask = new SubTask("sub1", "desc1", Status.NEW, 1,10,"2022-01-23T23:20:21.413486");
+        SubTask subTask = new SubTask("sub1", "desc1", Status.NEW, 1, 10, "2022-01-23T23:20:21.413486");
         taskManager.createNewSubTask(subTask);
-        SubTask subTask2 = new SubTask("sub1", "desc1", Status.NEW, 1,10,"2025-01-23T23:20:21.413486");
+        SubTask subTask2 = new SubTask("sub1", "desc1", Status.NEW, 1, 10, "2025-01-23T23:20:21.413486");
         taskManager.createNewSubTask(subTask2);
 
         taskManager.removeEpicById(1);
@@ -41,12 +41,12 @@ public class InMemoryTaskManagerTest extends TaskManagerTest<InMemoryTaskManager
 
     @Test
     void remove_removeTaskFormHistory_IfDeleteHisId() {
-        Task task1 = new Task("n", "d", Status.NEW,10,"2024-01-23T23:20:21.413486");
+        Task task1 = new Task("n", "d", Status.NEW, 10, "2024-01-23T23:20:21.413486");
         taskManager.createNewTask(task1);
         Epic epic1 = new Epic("n", "d", Status.NEW);
         taskManager.createNewEpic(epic1);
-        SubTask subTask1 = new SubTask("n", "d", Status.NEW, 2,10,"2025-01-23T23:20:21.413486");
-         taskManager.createNewSubTask(subTask1);
+        SubTask subTask1 = new SubTask("n", "d", Status.NEW, 2, 10, "2025-01-23T23:20:21.413486");
+        taskManager.createNewSubTask(subTask1);
 
         taskManager.getTaskById(1);
         taskManager.getSubtaskById(3);
@@ -64,11 +64,11 @@ public class InMemoryTaskManagerTest extends TaskManagerTest<InMemoryTaskManager
     void delete_deleteSubtaskFromHistory_ifDeleteHisEpic() {
         Epic epic1 = new Epic("n", "d", Status.NEW);
         taskManager.createNewEpic(epic1);
-        SubTask subTask1 = new SubTask("n", "d", Status.NEW, 1,10,"2024-01-23T23:20:21.413486");
+        SubTask subTask1 = new SubTask("n", "d", Status.NEW, 1, 10, "2024-01-23T23:20:21.413486");
         taskManager.createNewSubTask(subTask1);
-        SubTask subTask2 = new SubTask("n", "d", Status.DONE, 1,10,"2026-01-23T23:20:21.413486");
+        SubTask subTask2 = new SubTask("n", "d", Status.DONE, 1, 10, "2026-01-23T23:20:21.413486");
         taskManager.createNewSubTask(subTask2);
-        Task task1 = new Task("n", "d", Status.NEW,10,"2020-01-23T23:20:21.413486");
+        Task task1 = new Task("n", "d", Status.NEW, 10, "2020-01-23T23:20:21.413486");
         taskManager.createNewTask(task1);
 
 
@@ -81,4 +81,5 @@ public class InMemoryTaskManagerTest extends TaskManagerTest<InMemoryTaskManager
 
         Assertions.assertEquals(1, historyManager.getSize());
     }
+
 }

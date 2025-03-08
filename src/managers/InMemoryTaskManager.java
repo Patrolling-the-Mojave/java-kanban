@@ -100,35 +100,37 @@ public class InMemoryTaskManager implements TaskManager {
 
     @Override
     public Task createNewTask(Task task) throws OverLappingTimeException {
-        if (isTaskOverLapping(task)) {
-            throw new OverLappingTimeException("задача " + task + " пересекается с другими задачами");
-        }
         task.setId(getNewId());
+        if (task.getStartTime() != null) {
+            if (isTaskOverLapping(task)) {
+                throw new OverLappingTimeException("задача " + task + " пересекается с другими задачами");
+            }
+            prioritizedTasks.add(task);
+        }
         tasks.put(task.getId(), task);
-        prioritizedTasks.add(task);
         return task;
     }
 
     @Override
     public SubTask createNewSubTask(SubTask subTask) throws OverLappingTimeException {
-        if (isTaskOverLapping(subTask)) {
-            throw new OverLappingTimeException("подзадача " + subTask + " пересекается с другими задачами");
-        }
         subTask.setId(getNewId());
+        if (subTask.getStartTime() != null) {
+            if (isTaskOverLapping(subTask)) {
+                throw new OverLappingTimeException("подзадача " + subTask + " пересекается с другими задачами");
+            }
+            prioritizedTasks.add(subTask);
+        }
         subTasks.put(subTask.getId(), subTask);
         epics.get(subTask.getEpicId()).getSubtaskIds().add(subTask.getId());
-        setEpicTime(epics.get(subTask.getEpicId()));
-        updateEpicStatus(epics.get(subTask.getEpicId()));
-        prioritizedTasks.add(subTask);
+        updateEpicParameters(epics.get(subTask.getEpicId()));
         return subTask;
     }
 
     @Override
     public Epic createNewEpic(Epic epic) {
         epic.setId(getNewId());
+        updateEpicParameters(epic);
         epics.put(epic.getId(), epic);
-        setEpicTime(epic);
-        updateEpicStatus(epic);
         return epic;
     }
 
@@ -152,15 +154,16 @@ public class InMemoryTaskManager implements TaskManager {
         if (oldSubTask == null) {
             throw new IllegalArgumentException("Подзадача с id " + updatedSubtask.getId() + " не найдена.");
         }
-        if (isTaskOverLapping(updatedSubtask)) {
-            throw new OverLappingTimeException("новая подзадача " + updatedSubtask + " пересекается с другими задачами");
+        if (updatedSubtask.getStartTime() != null) {
+            if (isTaskOverLapping(updatedSubtask)) {
+                throw new OverLappingTimeException("новая подзадача " + updatedSubtask + " пересекается с другими задачами");
+            }
+            prioritizedTasks.remove(oldSubTask);
+            prioritizedTasks.add(updatedSubtask);
         }
         subTasks.put(updatedSubtask.getId(), updatedSubtask);
         epics.get(updatedSubtask.getEpicId()).getSubtaskIds().add(updatedSubtask.getId());
-        updateEpicStatus(epics.get(updatedSubtask.getEpicId()));
-        setEpicTime(epics.get(updatedSubtask.getEpicId()));
-        prioritizedTasks.remove(oldSubTask);
-        prioritizedTasks.add(updatedSubtask);
+        updateEpicParameters(epics.get(updatedSubtask.getEpicId()));
     }
 
     @Override
@@ -169,12 +172,16 @@ public class InMemoryTaskManager implements TaskManager {
         if (oldEpic == null) {
             throw new IllegalArgumentException("Эпик с id " + epic.getId() + " не найден");
         }
-        setEpicTime(epic);
+        updateEpicParameters(epic);
         epics.put(epic.getId(), epic);
-        updateEpicStatus(epic);
     }
 
-    protected void updateEpicStatus(Epic epic) {
+    public void updateEpicParameters(Epic epic) {
+        updateEpicStatus(epic);
+        setEpicTime(epic);
+    }
+
+    private void updateEpicStatus(Epic epic) {
         boolean isNewTask = true;
         boolean isDoneTask = true;
         for (int subTaskId : epic.getSubtaskIds()) {
@@ -194,16 +201,21 @@ public class InMemoryTaskManager implements TaskManager {
         }
     }
 
-    public void setEpicTime(Epic epic) {
+    private void setEpicTime(Epic epic) {
         epic.setDuration(0);
         List<SubTask> subTasksList = epic.getSubtaskIds().stream()
                 .map(subTasks::get)
+                .filter(subTask -> subTask.getStartTime() != null)
                 .sorted(Comparator.comparing(SubTask::getStartTime))
                 .peek(subtask -> epic.setDuration(epic.getDuration() + subtask.getDuration()))
                 .toList();
         if (!subTasksList.isEmpty()) {
             epic.setStartTime(subTasksList.getFirst().getStartTime());
             epic.setEndTime(subTasksList.getLast().getEndTime());
+        } else {
+            epic.setStartTime(null);
+            epic.setEndTime(null);
+            epic.setDuration(0);
         }
     }
 

@@ -33,7 +33,12 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
                 List<String> taskInfo = new ArrayList<>(Arrays.asList(bufferedReader.readLine().split(",")));
                 switch (taskInfo.get(1)) {
                     case "TASK":
-                        Task task = new Task(taskInfo.get(2), taskInfo.get(4), Status.valueOf(taskInfo.get(3)), Integer.parseInt(taskInfo.get(5)), taskInfo.get(6));
+                        Task task;
+                        if (taskInfo.size() == 7) {
+                            task = new Task(taskInfo.get(2), taskInfo.get(4), Status.valueOf(taskInfo.get(3)), Integer.parseInt(taskInfo.get(5)), taskInfo.get(6));
+                        } else {
+                            task = new Task(taskInfo.get(2), taskInfo.get(4), Status.valueOf(taskInfo.get(3)));
+                        }
                         task.setId(Integer.parseInt(taskInfo.get(0)));
                         fileBackedTaskManager.addTask(task);
                         break;
@@ -43,7 +48,12 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
                         fileBackedTaskManager.addEpic(epic);
                         break;
                     case "SUBTASK":
-                        SubTask subTask = new SubTask(taskInfo.get(2), taskInfo.get(4), Status.valueOf(taskInfo.get(3)), Integer.parseInt(taskInfo.get(5)), Integer.parseInt(taskInfo.get(6)), taskInfo.get(7));
+                        SubTask subTask;
+                        if (taskInfo.size() == 8) {
+                            subTask = new SubTask(taskInfo.get(2), taskInfo.get(4), Status.valueOf(taskInfo.get(3)), Integer.parseInt(taskInfo.get(5)), Integer.parseInt(taskInfo.get(6)), taskInfo.get(7));
+                        } else {
+                            subTask = new SubTask(taskInfo.get(2), taskInfo.get(4), Status.valueOf(taskInfo.get(3)), Integer.parseInt(taskInfo.get(5)));
+                        }
                         subTask.setId(Integer.parseInt(taskInfo.get(0)));
                         fileBackedTaskManager.addSubTask(subTask);
                         break;
@@ -114,15 +124,13 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
 
     private void addEpic(Epic epic) {
         epics.put(epic.getId(), epic);
-        updateEpicStatus(epic);
-        setEpicTime(epic);
+        updateEpicParameters(epic);
     }
 
     private void addSubTask(SubTask subTask) {
         subTasks.put(subTask.getId(), subTask);
         epics.get(subTask.getEpicId()).getSubtaskIds().add(subTask.getId());
-        updateEpicStatus(epics.get(subTask.getEpicId()));
-        setEpicTime(epics.get(subTask.getEpicId()));
+        updateEpicParameters(epics.get(subTask.getEpicId()));
     }
 
     @Override

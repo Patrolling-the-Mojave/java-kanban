@@ -37,12 +37,12 @@ public class Epic extends Task {
     @Override
     public String toString() {
         return "Epic{" +
-                "endTime=" + endTime.format(FORMATTER) +
+                "endTime=" + (endTime != null ? endTime.format(FORMATTER) : "не задано") +
                 ", subtaskIds=" + subtaskIds +
                 ", description='" + description + '\'' +
-                ", duration=" + duration.toMinutes() +
+                ", duration=" + (duration != null ? duration.toMinutes() : "не задано") +
                 ", id=" + id +
-                ", startTime=" + startTime.format(FORMATTER) +
+                ", startTime=" + (startTime != null ? startTime.format(FORMATTER) : "не задано") +
                 ", status=" + status +
                 ", taskName='" + taskName + '\'' +
                 '}';
@@ -50,6 +50,7 @@ public class Epic extends Task {
 
     @Override
     public String convertToCSV() {
-        return String.format("%d,%s,%s,%s,%s,%d,%s", id, type, taskName, status, description, duration.toMinutes(), startTime);
+        return (startTime != null ? String.format("%d,%s,%s,%s,%s,%d,%s", id, type, taskName, status, description, duration.toMinutes(), startTime) :
+                String.format("%d,%s,%s,%s,%s", id, type, taskName, status, description));
     }
 }

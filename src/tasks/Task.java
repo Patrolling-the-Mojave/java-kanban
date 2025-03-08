@@ -28,6 +28,12 @@ public class Task {
         this.startTime = LocalDateTime.parse(startTime);
     }
 
+    public Task(String taskName, String description, Status status) {
+        this.taskName = taskName;
+        this.description = description;
+        this.status = status;
+    }
+
     public LocalDateTime getEndTime() {
         LocalDateTime endTime;
         try {
@@ -89,8 +95,8 @@ public class Task {
                 ", id=" + id +
                 ", taskName='" + taskName + '\'' +
                 ", status=" + status +
-                ", duration=" + duration.toMinutes() +
-                ", startTime=" + startTime.format(FORMATTER) +
+                ", duration=" + (duration != null ? duration.toMinutes() : "не задано") +
+                ", startTime=" + (startTime != null ? startTime.format(FORMATTER) : "не задано") +
                 '}';
     }
 
@@ -103,6 +109,10 @@ public class Task {
     }
 
     public String convertToCSV() {
-        return String.format("%d,%s,%s,%s,%s,%d,%s", id, type, taskName, status, description, duration.toMinutes(), startTime);
+        if (startTime != null) {
+            return String.format("%d,%s,%s,%s,%s,%d,%s", id, type, taskName, status, description, duration.toMinutes(), startTime);
+        }
+        return String.format("%d,%s,%s,%s,%s", id, type, taskName, status, description);
+
     }
 }
