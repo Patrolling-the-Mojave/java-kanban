@@ -1,5 +1,11 @@
 package tasks;
 
+import exceptions.TaskTimeException;
+
+import java.time.Duration;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.time.temporal.ChronoUnit;
 import java.util.Objects;
 
 public class Task {
@@ -8,7 +14,19 @@ public class Task {
     protected String taskName;
     protected String description;
     protected Status status;
+    protected Duration duration;
+    protected LocalDateTime startTime;
     private static final TaskType type = TaskType.TASK;
+    public static final DateTimeFormatter FORMATTER = DateTimeFormatter.ofPattern("dd.MM.yy|HH:mm");
+
+
+    public Task(String taskName, String description, Status status, int duration, String startTime) {
+        this.taskName = taskName;
+        this.description = description;
+        this.status = status;
+        this.duration = Duration.ofMinutes(duration);
+        this.startTime = LocalDateTime.parse(startTime);
+    }
 
     public Task(String taskName, String description, Status status) {
         this.taskName = taskName;
@@ -16,8 +34,30 @@ public class Task {
         this.status = status;
     }
 
-    public TaskType getType() {
-        return type;
+    public LocalDateTime getEndTime() {
+        LocalDateTime endTime;
+        try {
+            endTime = startTime.plus(duration);
+        } catch (NullPointerException ex) {
+            throw new TaskTimeException("время старта не задано");
+        }
+        return endTime;
+    }
+
+    public void setDuration(long durationInMinutes) {
+        this.duration = Duration.of(durationInMinutes, ChronoUnit.MINUTES);
+    }
+
+    public long getDuration() {
+        return duration.toMinutes();
+    }
+
+    public void setStartTime(LocalDateTime startTime) {
+        this.startTime = startTime;
+    }
+
+    public LocalDateTime getStartTime() {
+        return startTime;
     }
 
     public void setId(int id) {
@@ -50,11 +90,13 @@ public class Task {
 
     @Override
     public String toString() {
-        return "tasks.Task{" +
-                "id=" + id +
+        return "Task{" +
+                "description='" + description + '\'' +
+                ", id=" + id +
                 ", taskName='" + taskName + '\'' +
-                ", description='" + description + '\'' +
                 ", status=" + status +
+                ", duration=" + (duration != null ? duration.toMinutes() : "не задано") +
+                ", startTime=" + (startTime != null ? startTime.format(FORMATTER) : "не задано") +
                 '}';
     }
 
@@ -67,6 +109,10 @@ public class Task {
     }
 
     public String convertToCSV() {
+        if (startTime != null) {
+            return String.format("%d,%s,%s,%s,%s,%d,%s", id, type, taskName, status, description, duration.toMinutes(), startTime);
+        }
         return String.format("%d,%s,%s,%s,%s", id, type, taskName, status, description);
+
     }
 }

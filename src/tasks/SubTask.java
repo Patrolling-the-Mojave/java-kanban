@@ -8,6 +8,11 @@ public class SubTask extends Task {
         return epicId;
     }
 
+    public SubTask(String taskName, String description, Status status, int epicId, int duration, String startTime) {
+        super(taskName, description, status, duration, startTime);
+        this.epicId = epicId;
+    }
+
     public SubTask(String taskName, String description, Status status, int epicId) {
         super(taskName, description, status);
         this.epicId = epicId;
@@ -16,20 +21,22 @@ public class SubTask extends Task {
     @Override
     public String toString() {
         return "SubTask{" +
-                "id=" + getId() +
+                "taskName='" + taskName + '\'' +
+                ", status=" + status +
+                ", startTime=" + (startTime != null ? startTime.format(FORMATTER) : "не задано") +
+                ", id=" + id +
+                ", duration=" + (duration != null ? duration.toMinutes() : "не задано") +
+                ", description='" + description + '\'' +
                 ", epicId=" + epicId +
                 '}';
     }
 
     @Override
-    public TaskType getType() {
-        return type;
-    }
-
-    @Override
     public String convertToCSV() {
-        return String.format("%d,%s,%s,%s,%s,%d", id, type, taskName, status, description, epicId);
+        if (startTime == null) {
+            return String.format("%d,%s,%s,%s,%s,%d", id, type, taskName, status, description, epicId);
+        }
+        return String.format("%d,%s,%s,%s,%s,%d,%d,%s", id, type, taskName, status, description, epicId, duration.toMinutes(), startTime);
     }
-
 
 }

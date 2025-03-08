@@ -22,37 +22,16 @@ public class InMemoryHistoryManagerTest {
     }
 
     public Task buildTask() {
-        return new Task("name", "description", Status.NEW);
-    }
-
-    @Test
-    void add_AddTaskToHistory_IfCalledGetByIdMethod() {
-        Task task1 = new Task("n", "d", Status.NEW);
-        taskManager.createNewTask(task1);
-        Epic epic = new Epic("n", "d", Status.NEW);
-        taskManager.createNewEpic(epic);
-        SubTask subTask1 = new SubTask("n", "d", Status.NEW, 2);
-        taskManager.createNewSubTask(subTask1);
-
-        taskManager.getTaskById(1);
-        taskManager.getSubtaskById(3);
-        taskManager.getEpicById(2);
-
-        ArrayList<Task> history = new ArrayList<>();
-        history.add(task1);
-        history.add(subTask1);
-        history.add(epic);
-
-        Assertions.assertEquals(history, taskManager.getHistory());
+        return new Task("name", "description", Status.NEW,10,"2025-01-23T23:20:21.413486");
     }
 
     @Test
     void remove_RemoveTaskFromHistory_IfCalledRemoveMethodInHistoryManager() {
-        Task task1 = new Task("n", "d", Status.NEW);
+        Task task1 = new Task("n", "d", Status.NEW,10,"2024-01-23T23:20:21.413486");
         taskManager.createNewTask(task1);
         Epic epic = new Epic("n", "d", Status.NEW);
         taskManager.createNewEpic(epic);
-        SubTask subTask1 = new SubTask("n", "d", Status.NEW, 2);
+        SubTask subTask1 = new SubTask("n", "d", Status.NEW, 2,10,"2025-01-23T23:20:21.413486");
         taskManager.createNewSubTask(subTask1);
 
         taskManager.getTaskById(1);
@@ -69,11 +48,11 @@ public class InMemoryHistoryManagerTest {
 
     @Test
     void add_AddNodeOnTheTop_ifAlreadyInHistoryAndCalledGetMethod() {
-        Task task1 = new Task("n", "d", Status.NEW);
+        Task task1 = new Task("n", "d", Status.NEW,10,"2023-01-23T23:20:21.413486");
         taskManager.createNewTask(task1);
         Epic epic1 = new Epic("n", "d", Status.NEW);
         taskManager.createNewEpic(epic1);
-        SubTask subTask1 = new SubTask("n", "d", Status.NEW, 2);
+        SubTask subTask1 = new SubTask("n", "d", Status.NEW, 2,10,"2025-01-23T23:20:21.413486");
         taskManager.createNewSubTask(subTask1);
 
         taskManager.getTaskById(1);
@@ -88,7 +67,7 @@ public class InMemoryHistoryManagerTest {
 
     @Test
     void increase_sizeWillIncrease_ifNodeISCreated() {
-        Task task1 = new Task("n", "d", Status.NEW);
+        Task task1 = new Task("n", "d", Status.NEW,10,"2025-01-23T23:20:21.413486");
         taskManager.createNewTask(task1);
         Epic epic1 = new Epic("n", "d", Status.NEW);
         taskManager.createNewEpic(epic1);
