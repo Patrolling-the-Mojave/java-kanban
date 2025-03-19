@@ -8,7 +8,6 @@ import com.google.gson.stream.JsonReader;
 import com.google.gson.stream.JsonToken;
 import com.google.gson.stream.JsonWriter;
 import com.sun.net.httpserver.HttpExchange;
-import lombok.Getter;
 import tasks.Task;
 
 import java.io.IOException;
@@ -55,7 +54,6 @@ public class BaseHttpHandler {
         }
     };
 
-    @Getter
     protected final Gson gson = new GsonBuilder()
             .serializeNulls()
             .registerTypeAdapter(LocalDateTime.class, ldtAdapter)
@@ -98,6 +96,10 @@ public class BaseHttpHandler {
 
     protected String getRequestBody(HttpExchange exchange) throws IOException {
         return new String(exchange.getRequestBody().readAllBytes(), StandardCharsets.UTF_8);
+    }
+
+    public Gson getGson() {
+        return gson;
     }
 
 
