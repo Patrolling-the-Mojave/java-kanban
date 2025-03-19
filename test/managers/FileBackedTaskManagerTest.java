@@ -1,6 +1,7 @@
 package managers;
 
 import exceptions.ManagerSaveException;
+import exceptions.OverLappingTimeException;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -35,7 +36,7 @@ public class FileBackedTaskManagerTest extends TaskManagerTest<FileBackedTaskMan
     }
 
     @Test
-    void add_addTasksToFile_IfTaskIsCreated() {
+    void add_addTasksToFile_IfTaskIsCreated() throws OverLappingTimeException {
         Task task = new Task("n", "d", Status.NEW, 5, "2023-01-23T23:20:21.413486");
         taskManager.createNewTask(task);
         Epic epic = new Epic("n", "d", Status.NEW);
@@ -55,7 +56,7 @@ public class FileBackedTaskManagerTest extends TaskManagerTest<FileBackedTaskMan
     }
 
     @Test
-    void add_addTasksToFile_IfTaskIsUpdated() {
+    void add_addTasksToFile_IfTaskIsUpdated() throws OverLappingTimeException {
         Task task = new Task("n", "d", Status.NEW, 5, "2025-01-23T23:20:21.413486");
         taskManager.createNewTask(task);
         Epic epic = new Epic("n", "d", Status.NEW);
@@ -86,7 +87,7 @@ public class FileBackedTaskManagerTest extends TaskManagerTest<FileBackedTaskMan
     }
 
     @Test
-    void remove_removeTaskFromFile_ifCalledRemoveMethod() {
+    void remove_removeTaskFromFile_ifCalledRemoveMethod() throws OverLappingTimeException {
         Task task = new Task("n", "d", Status.NEW, 5, "2021-01-23T23:20:21.413486");
         taskManager.createNewTask(task);
         Epic epic = new Epic("n", "d", Status.NEW);
@@ -108,7 +109,7 @@ public class FileBackedTaskManagerTest extends TaskManagerTest<FileBackedTaskMan
     }
 
     @Test
-    void remove_removeTasks_ifCalledRemoveAllMethod() throws ManagerSaveException {
+    void remove_removeTasks_ifCalledRemoveAllMethod() throws ManagerSaveException, OverLappingTimeException {
         Task task = new Task("n", "d", Status.NEW, 5, "2025-01-23T23:20:21.413486");
         taskManager.createNewTask(task);
         Epic epic = new Epic("n", "d", Status.NEW);
@@ -160,7 +161,7 @@ public class FileBackedTaskManagerTest extends TaskManagerTest<FileBackedTaskMan
 
 
     @Test
-    void check_checkCollisionInTaskMap() throws ManagerSaveException {
+    void check_checkCollisionInTaskMap() throws ManagerSaveException, OverLappingTimeException {
         try (FileWriter fileWriter = new FileWriter(savedData.toFile(), UTF_8)) {
             fileWriter.write("id,type,name,status,description,epic,duration,startTime\n");
             fileWriter.write("1,TASK,t1,NEW,d1,10,2025-01-23T23:20:21.413486\n");
@@ -178,7 +179,7 @@ public class FileBackedTaskManagerTest extends TaskManagerTest<FileBackedTaskMan
     }
 
     @Test
-    void subtaskUpdate_shouldntAddIdMoreThanOnce() {
+    void subtaskUpdate_shouldntAddIdMoreThanOnce() throws OverLappingTimeException {
         Epic epic = new Epic("e1", "d1", Status.NEW);
         taskManager.createNewEpic(epic);
         SubTask subTask = new SubTask("s1", "d1", Status.NEW, 1, 10, "2021-01-23T23:20:21.413486");

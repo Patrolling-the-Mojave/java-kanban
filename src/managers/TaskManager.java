@@ -1,5 +1,6 @@
 package managers;
 
+import exceptions.OverLappingTimeException;
 import tasks.Epic;
 import tasks.SubTask;
 import tasks.Task;
@@ -28,15 +29,15 @@ public interface TaskManager {
 
     Optional<Epic> getEpicById(int id);
 
-    Task createNewTask(Task task);
+    Task createNewTask(Task task) throws OverLappingTimeException;
 
-    SubTask createNewSubTask(SubTask subTask);
+    SubTask createNewSubTask(SubTask subTask) throws OverLappingTimeException;
 
     Epic createNewEpic(Epic epic);
 
-    void updateTask(Task updatedTask);
+    void updateTask(Task updatedTask) throws OverLappingTimeException;
 
-    void updateSubtask(SubTask updatedSubtask);
+    void updateSubtask(SubTask updatedSubtask) throws OverLappingTimeException;
 
     void updateEpic(Epic epic);
 

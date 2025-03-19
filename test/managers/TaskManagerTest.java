@@ -1,6 +1,7 @@
 package managers;
 
 import exceptions.OverLappingTimeException;
+import lombok.SneakyThrows;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -24,6 +25,7 @@ public abstract class TaskManagerTest<T extends TaskManager> {
         taskManager = Managers.getDefault(historyManager);
     }
 
+    @SneakyThrows
     @Test
     void return_returnPrioritizedByStartTimeTasks_getPrioritizedTasks() {
         Task task = new Task("n", "d", Status.NEW, 5, "2022-01-23T23:20:21.413486");
@@ -40,6 +42,7 @@ public abstract class TaskManagerTest<T extends TaskManager> {
         Assertions.assertArrayEquals(tasksList.toArray(), taskManager.getPrioritizedTasks().toArray());
     }
 
+    @SneakyThrows
     @Test
     void skip_shouldSkipNewEpicInPrioritizedTasks() {
         Task task = new Task("n", "d", Status.NEW, 5, "2022-01-23T23:20:21.413486");
@@ -52,6 +55,7 @@ public abstract class TaskManagerTest<T extends TaskManager> {
         Assertions.assertArrayEquals(tasks.toArray(), taskManager.getPrioritizedTasks().toArray());
     }
 
+    @SneakyThrows
     @Test
     void throw_shouldThrowOverLappingException_ifTaskIntersects() {
         Task task = new Task("n", "d", Status.NEW, 5, "2022-01-23T23:20:21.413486");
@@ -68,6 +72,7 @@ public abstract class TaskManagerTest<T extends TaskManager> {
         Assertions.assertThrows(OverLappingTimeException.class, () -> taskManager.createNewTask(overLappingTask));
     }
 
+    @SneakyThrows
     @Test
     void throw_shouldThrowOverLappingException_ifSubTaskIntersects() {
         Task task = new Task("n", "d", Status.NEW, 5, "2022-01-23T23:20:21.413486");
@@ -84,6 +89,7 @@ public abstract class TaskManagerTest<T extends TaskManager> {
         Assertions.assertThrows(OverLappingTimeException.class, () -> taskManager.createNewTask(overLappingSubTask));
     }
 
+    @SneakyThrows
     @Test
     void throw_shouldThrowOverLappingException_ifEpicIntersects() {
         Task task = new Task("n", "d", Status.NEW, 5, "2022-01-23T23:20:21.413486");
@@ -100,6 +106,7 @@ public abstract class TaskManagerTest<T extends TaskManager> {
         Assertions.assertThrows(OverLappingTimeException.class, () -> taskManager.createNewTask(overLappingSubTask));
     }
 
+    @SneakyThrows
     @Test
     void throw_shouldThrowOverLappingException_ifUpdatedTaskIntersects() {
         Task task = new Task("n", "d", Status.NEW, 5, "2022-01-23T23:20:21.413486");
@@ -117,6 +124,7 @@ public abstract class TaskManagerTest<T extends TaskManager> {
         Assertions.assertThrows(OverLappingTimeException.class, () -> taskManager.updateTask(overLappingTask));
     }
 
+    @SneakyThrows
     @Test
     void throw_shouldThrowOverLappingException_ifUpdatedSubTaskIntersects() {
         Task task = new Task("n", "d", Status.NEW, 5, "2022-01-23T23:20:21.413486");
@@ -148,6 +156,7 @@ public abstract class TaskManagerTest<T extends TaskManager> {
         Assertions.assertTrue(Objects.equals(task2, task));
     }
 
+    @SneakyThrows
     @Test
     void subTasksWithEqualIdShouldBeEqual() {
         Epic epic = new Epic("epicName", "desc", Status.NEW);
@@ -177,6 +186,7 @@ public abstract class TaskManagerTest<T extends TaskManager> {
         Assertions.assertTrue(Objects.equals(epic2, epic1));
     }
 
+    @SneakyThrows
     @Test
     void getSubTasksByEpicId_ReturnSubtasksListOfEpic() {
         Epic epic = new Epic("epic", "d", Status.NEW);
@@ -193,6 +203,7 @@ public abstract class TaskManagerTest<T extends TaskManager> {
         Assertions.assertEquals(subTaskList, taskManager.getSubTasksByEpicId(1));
     }
 
+    @SneakyThrows
     @Test
     void getTasks_ReturnTasksList() {
         Task task = new Task("task", "description", Status.NEW, 10, "2025-01-23T23:20:21.413486");
@@ -203,6 +214,7 @@ public abstract class TaskManagerTest<T extends TaskManager> {
         Assertions.assertEquals(tasks, taskManager.getTasks());
     }
 
+    @SneakyThrows
     @Test
     void getSubTasks_ReturnSubtasksList() {
         Epic epic = new Epic("epic", "descriotion", Status.NEW);
@@ -225,6 +237,7 @@ public abstract class TaskManagerTest<T extends TaskManager> {
         Assertions.assertEquals(epics, taskManager.getEpics());
     }
 
+    @SneakyThrows
     @Test
     void updateEpicStatus_ChangeStatusWhenAddingASubTask() {
         Epic epic = new Epic("epic", "d", Status.NEW);
@@ -245,6 +258,7 @@ public abstract class TaskManagerTest<T extends TaskManager> {
         Assertions.assertEquals(Status.DONE, epic.getStatus());
     }
 
+    @SneakyThrows
     @Test
     void add_AddTaskToHistory_IfCalledGetByIdMethod() {
         Task task1 = new Task("n", "d", Status.NEW, 10, "2024-01-23T23:20:21.413486");
@@ -266,6 +280,7 @@ public abstract class TaskManagerTest<T extends TaskManager> {
         Assertions.assertEquals(history, taskManager.getHistory());
     }
 
+    @SneakyThrows
     @Test
     void updateEpicTime_updateEpicTimeAfterAddingNewSubtaskWithStartTime() {
         Epic epic = new Epic("epic", "epicDesc", Status.NEW);
@@ -280,6 +295,7 @@ public abstract class TaskManagerTest<T extends TaskManager> {
         Assertions.assertEquals(LocalDateTime.parse("2020-01-23T23:20:21.413486"), epic.getStartTime());
     }
 
+    @SneakyThrows
     @Test
     void updateEpicTime_updateEpicTimeAfterAddingTimeForSubtask() {
         Epic epic = new Epic("epic", "epicDesc", Status.NEW);
@@ -294,6 +310,7 @@ public abstract class TaskManagerTest<T extends TaskManager> {
         Assertions.assertEquals(LocalDateTime.parse("2020-01-23T23:20:21.413486"), epic.getStartTime());
     }
 
+    @SneakyThrows
     @Test
     void updateEpicTime_updateEpicTimeAfterDeletingSubtaskTime() {
         Epic epic = new Epic("epic", "epicDesc", Status.NEW);

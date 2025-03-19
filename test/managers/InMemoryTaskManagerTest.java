@@ -1,6 +1,7 @@
 package managers;
 
 
+import lombok.SneakyThrows;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -22,7 +23,7 @@ public class InMemoryTaskManagerTest extends TaskManagerTest<InMemoryTaskManager
         historyManager = Managers.getDefaultHistory();
         taskManager = new InMemoryTaskManager(historyManager);
     }
-
+    @SneakyThrows
     @Test
     void removeEpicById_DeleteSubtasksWhenDeletingTheirEpic() {
         Epic epic = new Epic("epic1", "desc1", Status.NEW);
@@ -38,7 +39,7 @@ public class InMemoryTaskManagerTest extends TaskManagerTest<InMemoryTaskManager
         Assertions.assertTrue(taskManager.getSubTasks().isEmpty());
 
     }
-
+    @SneakyThrows
     @Test
     void remove_removeTaskFormHistory_IfDeleteHisId() {
         Task task1 = new Task("n", "d", Status.NEW, 10, "2024-01-23T23:20:21.413486");
@@ -59,7 +60,7 @@ public class InMemoryTaskManagerTest extends TaskManagerTest<InMemoryTaskManager
 
         Assertions.assertEquals(tasks, historyManager.getHistory());
     }
-
+    @SneakyThrows
     @Test
     void delete_deleteSubtaskFromHistory_ifDeleteHisEpic() {
         Epic epic1 = new Epic("n", "d", Status.NEW);
