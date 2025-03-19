@@ -1,7 +1,7 @@
 package servers.handlers;
 
 import com.google.gson.Gson;
-import lombok.SneakyThrows;
+import exceptions.OverLappingTimeException;
 import managers.InMemoryTaskManager;
 import managers.Managers;
 import managers.TaskManager;
@@ -13,6 +13,7 @@ import servers.HttpTaskServer;
 import tasks.Status;
 import tasks.Task;
 
+import java.io.IOException;
 import java.net.URI;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
@@ -24,9 +25,8 @@ public class TaskHandlerTest {
     TaskManager taskManager = new InMemoryTaskManager(Managers.getDefaultHistory());
     HttpTaskServer taskServer;
 
-    @SneakyThrows
     @BeforeEach
-    void startServer() {
+    void startServer() throws IOException {
         taskManager = new InMemoryTaskManager(Managers.getDefaultHistory());
         taskServer = new HttpTaskServer(taskManager);
         taskServer.start();
@@ -37,9 +37,8 @@ public class TaskHandlerTest {
         taskServer.stop();
     }
 
-    @SneakyThrows
     @Test
-    void getTasks_getAllTasks() {
+    void getTasks_getAllTasks() throws IOException, InterruptedException, OverLappingTimeException {
         Task task1 = new Task("n", "d", Status.NEW, 10, "2025-01-23T23:20:21.413486");
         taskManager.createNewTask(task1);
         Task task2 = new Task("n", "d", Status.NEW);
@@ -55,9 +54,8 @@ public class TaskHandlerTest {
         Assertions.assertEquals(tasks, response.body());
     }
 
-    @SneakyThrows
     @Test
-    void getTask_getTaskByPathId() {
+    void getTask_getTaskByPathId() throws IOException, InterruptedException, OverLappingTimeException {
         Task task1 = new Task("n", "d", Status.NEW, 10, "2025-01-23T23:20:21.413486");
         taskManager.createNewTask(task1);
         Task task2 = new Task("n", "d", Status.NEW);
@@ -75,8 +73,7 @@ public class TaskHandlerTest {
     }
 
     @Test
-    @SneakyThrows
-    void deleteTask_deleteTaskByPathId() {
+    void deleteTask_deleteTaskByPathId() throws IOException, InterruptedException, OverLappingTimeException {
         Task task1 = new Task("n", "d", Status.NEW, 10, "2025-01-23T23:20:21.413486");
         taskManager.createNewTask(task1);
         Task task2 = new Task("n", "d", Status.NEW);
@@ -91,8 +88,7 @@ public class TaskHandlerTest {
     }
 
     @Test
-    @SneakyThrows
-    void createTask_createRequestBodyTask() {
+    void createTask_createRequestBodyTask() throws IOException, InterruptedException, OverLappingTimeException {
         Task task1 = new Task("n", "d", Status.NEW, 10, "2025-01-23T23:20:21.413486");
         String requestBody = gson.toJson(task1);
 
@@ -105,8 +101,7 @@ public class TaskHandlerTest {
     }
 
     @Test
-    @SneakyThrows
-    void updateTask_updateRequestBodyTask() {
+    void updateTask_updateRequestBodyTask() throws IOException, InterruptedException, OverLappingTimeException {
         Task task1 = new Task("n", "d", Status.NEW, 10, "2025-01-23T23:20:21.413486");
         taskManager.createNewTask(task1);
 
@@ -123,8 +118,7 @@ public class TaskHandlerTest {
     }
 
     @Test
-    @SneakyThrows
-    void throwOverlappingTimeException_ifTaskIsOverlapping() {
+    void throwOverlappingTimeException_ifTaskIsOverlapping() throws IOException, InterruptedException, OverLappingTimeException {
         Task task2 = new Task("n", "d", Status.NEW, 10, "2025-01-23T23:20:21.413486");
         taskManager.createNewTask(task2);
         Task task1 = new Task("n", "d", Status.NEW, 10, "2025-01-23T23:20:21.413486");
@@ -138,8 +132,7 @@ public class TaskHandlerTest {
     }
 
     @Test
-    @SneakyThrows
-    void throwOverlappingTimeException_ifUpdatedTaskIsOverlapping() {
+    void throwOverlappingTimeException_ifUpdatedTaskIsOverlapping() throws IOException, InterruptedException, OverLappingTimeException {
         Task task3 = new Task("n", "d", Status.NEW, 10, "2025-01-23T23:20:21.413486");
         taskManager.createNewTask(task3);
         Task task2 = new Task("n", "d", Status.NEW);

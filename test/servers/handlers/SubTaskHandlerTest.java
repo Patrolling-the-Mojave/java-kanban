@@ -1,7 +1,7 @@
 package servers.handlers;
 
 import com.google.gson.Gson;
-import lombok.SneakyThrows;
+import exceptions.OverLappingTimeException;
 import managers.InMemoryTaskManager;
 import managers.Managers;
 import managers.TaskManager;
@@ -14,6 +14,7 @@ import tasks.Epic;
 import tasks.Status;
 import tasks.SubTask;
 
+import java.io.IOException;
 import java.net.URI;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
@@ -25,9 +26,8 @@ public class SubTaskHandlerTest {
     TaskManager taskManager = new InMemoryTaskManager(Managers.getDefaultHistory());
     HttpTaskServer taskServer;
 
-    @SneakyThrows
     @BeforeEach
-    void startServer() {
+    void startServer() throws IOException {
         taskManager = new InMemoryTaskManager(Managers.getDefaultHistory());
         taskServer = new HttpTaskServer(taskManager);
         taskServer.start();
@@ -38,9 +38,8 @@ public class SubTaskHandlerTest {
         taskServer.stop();
     }
 
-    @SneakyThrows
     @Test
-    void getSubTasks_getAllSubTasks() {
+    void getSubTasks_getAllSubTasks() throws IOException, InterruptedException, OverLappingTimeException {
         Epic epic = new Epic("epic", "epicDesc", Status.NEW);
         taskManager.createNewEpic(epic);
         SubTask subTask1 = new SubTask("name2", "desc2", Status.NEW, 1, 400, "2020-01-23T23:20:21.413486");
@@ -55,9 +54,8 @@ public class SubTaskHandlerTest {
         Assertions.assertEquals(subtasks, response.body());
     }
 
-    @SneakyThrows
     @Test
-    void getSubTask_getSubTaskByPathId() {
+    void getSubTask_getSubTaskByPathId() throws IOException, InterruptedException, OverLappingTimeException {
         Epic epic = new Epic("epic", "epicDesc", Status.NEW);
         taskManager.createNewEpic(epic);
         SubTask subTask1 = new SubTask("name2", "desc2", Status.NEW, 1, 400, "2020-01-23T23:20:21.413486");
@@ -74,8 +72,7 @@ public class SubTaskHandlerTest {
     }
 
     @Test
-    @SneakyThrows
-    void deleteSubTask_deleteSubTaskByPathId() {
+    void deleteSubTask_deleteSubTaskByPathId() throws IOException, InterruptedException, OverLappingTimeException {
         Epic epic = new Epic("epic", "epicDesc", Status.NEW);
         taskManager.createNewEpic(epic);
         SubTask subTask1 = new SubTask("name2", "desc2", Status.NEW, 1, 400, "2020-01-23T23:20:21.413486");
@@ -92,8 +89,7 @@ public class SubTaskHandlerTest {
     }
 
     @Test
-    @SneakyThrows
-    void createSubTask_createRequestBodySubTask() {
+    void createSubTask_createRequestBodySubTask() throws IOException, InterruptedException, OverLappingTimeException {
         Epic epic = new Epic("epic", "epicDesc", Status.NEW);
         taskManager.createNewEpic(epic);
 
@@ -110,8 +106,7 @@ public class SubTaskHandlerTest {
     }
 
     @Test
-    @SneakyThrows
-    void updateSubTask_updateRequestBodySubTask() {
+    void updateSubTask_updateRequestBodySubTask() throws IOException, InterruptedException, OverLappingTimeException {
         Epic epic = new Epic("epic", "epicDesc", Status.NEW);
         taskManager.createNewEpic(epic);
         SubTask subTask1 = new SubTask("name2", "desc2", Status.NEW, 1, 400, "2020-01-23T23:20:21.413486");
@@ -131,8 +126,7 @@ public class SubTaskHandlerTest {
     }
 
     @Test
-    @SneakyThrows
-    void throwOverlappingTimeException_ifCreatedSubTaskIsOverlapping() {
+    void throwOverlappingTimeException_ifCreatedSubTaskIsOverlapping() throws IOException, InterruptedException, OverLappingTimeException {
         Epic epic = new Epic("epic", "epicDesc", Status.NEW);
         taskManager.createNewEpic(epic);
         SubTask subTask1 = new SubTask("name2", "desc2", Status.NEW, 1, 400, "2020-01-23T23:20:21.413486");
@@ -149,8 +143,7 @@ public class SubTaskHandlerTest {
     }
 
     @Test
-    @SneakyThrows
-    void throwOverlappingTimeException_ifUpdatedSubTaskIsOverlapping() {
+    void throwOverlappingTimeException_ifUpdatedSubTaskIsOverlapping() throws IOException, InterruptedException, OverLappingTimeException {
         Epic epic = new Epic("epic", "epicDesc", Status.NEW);
         taskManager.createNewEpic(epic);
         SubTask subTask1 = new SubTask("name2", "desc2", Status.NEW, 1, 400, "2020-01-23T23:20:21.413486");

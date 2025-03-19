@@ -1,7 +1,6 @@
 package servers.handlers;
 
 import com.google.gson.Gson;
-import lombok.SneakyThrows;
 import managers.InMemoryTaskManager;
 import managers.Managers;
 import managers.TaskManager;
@@ -13,6 +12,7 @@ import servers.HttpTaskServer;
 import tasks.Epic;
 import tasks.Status;
 
+import java.io.IOException;
 import java.net.URI;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
@@ -24,9 +24,8 @@ public class EpicHandlerTest {
     TaskManager taskManager = new InMemoryTaskManager(Managers.getDefaultHistory());
     HttpTaskServer taskServer;
 
-    @SneakyThrows
     @BeforeEach
-    void startServer() {
+    void startServer() throws IOException {
         taskManager = new InMemoryTaskManager(Managers.getDefaultHistory());
         taskServer = new HttpTaskServer(taskManager);
         taskServer.start();
@@ -37,9 +36,8 @@ public class EpicHandlerTest {
         taskServer.stop();
     }
 
-    @SneakyThrows
     @Test
-    void getEpics_getAllEpics() {
+    void getEpics_getAllEpics() throws IOException, InterruptedException {
         Epic epic = new Epic("epic", "epicDesc", Status.NEW);
         taskManager.createNewEpic(epic);
         Epic epic2 = new Epic("epic2", "epicDesc2", Status.NEW);
@@ -55,9 +53,8 @@ public class EpicHandlerTest {
         Assertions.assertEquals(epics, response.body());
     }
 
-    @SneakyThrows
     @Test
-    void getEpic_getEpicByPathId() {
+    void getEpic_getEpicByPathId() throws IOException, InterruptedException {
         Epic epic = new Epic("epic", "epicDesc", Status.NEW);
         taskManager.createNewEpic(epic);
 
@@ -69,12 +66,10 @@ public class EpicHandlerTest {
 
         Assertions.assertEquals(200, response.statusCode());
         Assertions.assertEquals(epicRequest, response.body());
-
     }
 
     @Test
-    @SneakyThrows
-    void deleteEpic_deleteEpicByPathId() {
+    void deleteEpic_deleteEpicByPathId() throws IOException, InterruptedException {
         Epic epic = new Epic("epic", "epicDesc", Status.NEW);
         taskManager.createNewEpic(epic);
         Epic epic2 = new Epic("epic", "epicDesc", Status.NEW);
@@ -89,8 +84,7 @@ public class EpicHandlerTest {
     }
 
     @Test
-    @SneakyThrows
-    void createEpic_createRequestBodyEpic() {
+    void createEpic_createRequestBodyEpic() throws IOException, InterruptedException {
         Epic epic = new Epic("epic", "epicDesc", Status.NEW);
 
         String requestBody = gson.toJson(epic);
@@ -104,8 +98,7 @@ public class EpicHandlerTest {
     }
 
     @Test
-    @SneakyThrows
-    void updateEpic_updateRequestBodyEpic() {
+    void updateEpic_updateRequestBodyEpic() throws IOException, InterruptedException {
         Epic epic = new Epic("epic", "epicDesc", Status.NEW);
         taskManager.createNewEpic(epic);
 

@@ -1,7 +1,7 @@
 package servers;
 
 import com.google.gson.Gson;
-import lombok.SneakyThrows;
+import exceptions.OverLappingTimeException;
 import managers.InMemoryTaskManager;
 import managers.Managers;
 import managers.TaskManager;
@@ -39,9 +39,8 @@ public class SerializationTest {
         Assertions.assertEquals("{\"epicId\":1,\"id\":0,\"taskName\":\"sub\",\"description\":\"desc\",\"status\":\"NEW\",\"duration\":null,\"startTime\":null}", gson.toJson(subTask2));
     }
 
-    @SneakyThrows
     @Test
-    void serialize_serializeEpicToJson() {
+    void serialize_serializeEpicToJson() throws OverLappingTimeException {
         Epic epic = new Epic("epic", "description", Status.NEW);
         taskManager.createNewEpic(epic);
         SubTask subTask2 = new SubTask("sub", "desc", Status.NEW, 1);

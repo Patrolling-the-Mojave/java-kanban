@@ -1,7 +1,7 @@
 package servers.handlers;
 
 import com.google.gson.Gson;
-import lombok.SneakyThrows;
+import exceptions.OverLappingTimeException;
 import managers.InMemoryTaskManager;
 import managers.Managers;
 import managers.TaskManager;
@@ -13,6 +13,7 @@ import servers.HttpTaskServer;
 import tasks.Status;
 import tasks.Task;
 
+import java.io.IOException;
 import java.net.URI;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
@@ -24,9 +25,8 @@ public class PrioritizedTasksHandlerTest {
     TaskManager taskManager = new InMemoryTaskManager(Managers.getDefaultHistory());
     HttpTaskServer taskServer;
 
-    @SneakyThrows
     @BeforeEach
-    void startServer() {
+    void startServer() throws IOException {
         taskManager = new InMemoryTaskManager(Managers.getDefaultHistory());
         taskServer = new HttpTaskServer(taskManager);
         taskServer.start();
@@ -38,8 +38,7 @@ public class PrioritizedTasksHandlerTest {
     }
 
     @Test
-    @SneakyThrows
-    void getPrioritizedTasks() {
+    void getPrioritizedTasks() throws OverLappingTimeException, IOException, InterruptedException {
         Task task1 = new Task("n", "d", Status.NEW, 10, "2025-01-23T23:20:21.413486");
         taskManager.createNewTask(task1);
         Task task2 = new Task("n", "d", Status.NEW, 10, "2026-01-23T23:20:21.413486");

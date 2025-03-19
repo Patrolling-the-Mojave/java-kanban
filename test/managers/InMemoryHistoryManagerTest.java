@@ -1,6 +1,6 @@
 package managers;
 
-import lombok.SneakyThrows;
+import exceptions.OverLappingTimeException;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -26,9 +26,9 @@ public class InMemoryHistoryManagerTest {
         return new Task("name", "description", Status.NEW, 10, "2025-01-23T23:20:21.413486");
     }
 
-    @SneakyThrows
+
     @Test
-    void remove_RemoveTaskFromHistory_IfCalledRemoveMethodInHistoryManager() {
+    void remove_RemoveTaskFromHistory_IfCalledRemoveMethodInHistoryManager() throws OverLappingTimeException {
         Task task1 = new Task("n", "d", Status.NEW, 10, "2024-01-23T23:20:21.413486");
         taskManager.createNewTask(task1);
         Epic epic = new Epic("n", "d", Status.NEW);
@@ -48,9 +48,9 @@ public class InMemoryHistoryManagerTest {
         Assertions.assertEquals(history, taskManager.getHistory());
     }
 
-    @SneakyThrows
+
     @Test
-    void add_AddNodeOnTheTop_ifAlreadyInHistoryAndCalledGetMethod() {
+    void add_AddNodeOnTheTop_ifAlreadyInHistoryAndCalledGetMethod() throws OverLappingTimeException {
         Task task1 = new Task("n", "d", Status.NEW, 10, "2023-01-23T23:20:21.413486");
         taskManager.createNewTask(task1);
         Epic epic1 = new Epic("n", "d", Status.NEW);
@@ -68,9 +68,9 @@ public class InMemoryHistoryManagerTest {
         Assertions.assertEquals(tasks, taskManager.getHistory());
     }
 
-    @SneakyThrows
+
     @Test
-    void increase_sizeWillIncrease_ifNodeISCreated() {
+    void increase_sizeWillIncrease_ifNodeISCreated() throws OverLappingTimeException {
         Task task1 = new Task("n", "d", Status.NEW, 10, "2025-01-23T23:20:21.413486");
         taskManager.createNewTask(task1);
         Epic epic1 = new Epic("n", "d", Status.NEW);
@@ -83,7 +83,6 @@ public class InMemoryHistoryManagerTest {
 
         taskManager.removeTaskById(1);
         Assertions.assertEquals(1, historyManager.getSize());
-
     }
 
 
