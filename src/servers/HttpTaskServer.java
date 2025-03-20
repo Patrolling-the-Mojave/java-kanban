@@ -38,6 +38,5 @@ public class HttpTaskServer {
         } catch (IOException e) {
             System.out.println("что-то пошло не так");
         }
-
     }
 }

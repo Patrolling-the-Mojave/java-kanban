@@ -1,6 +1,6 @@
 package exceptions;
 
-public class OverLappingTimeException extends Exception {
+public class OverLappingTimeException extends RuntimeException {
 
     public OverLappingTimeException(String message) {
         super(message);

@@ -11,7 +11,7 @@ import java.io.OutputStream;
 import java.util.Optional;
 
 public class EpicHandler extends BaseHttpHandler implements HttpHandler {
-    TaskManager taskManager;
+    private final TaskManager taskManager;
 
     public EpicHandler(TaskManager taskManager) {
         this.taskManager = taskManager;
@@ -21,25 +21,19 @@ public class EpicHandler extends BaseHttpHandler implements HttpHandler {
     public void handle(HttpExchange exchange) throws IOException {
         switch (exchange.getRequestMethod()) {
             case "GET":
-                getHandler(exchange);
+                handleGetMethod(exchange);
                 break;
             case "DELETE":
-                deleteHandler(exchange);
+                handleDeleteMethod(exchange);
                 break;
             case "POST":
-                createHandler(exchange);
+                handlePostMethod(exchange);
                 break;
         }
     }
 
-    private void getHandler(HttpExchange exchange) throws IOException {
-        Optional<Integer> id;
-        try {
-            id = getIdFromPath(exchange);
-        } catch (NumberFormatException ex) {
-            sendNotFound(exchange, "передан некорректный id");
-            id = Optional.empty();
-        }
+    private void handleGetMethod(HttpExchange exchange) throws IOException {
+        Optional<Integer> id = getIdFromPath(exchange);
         if (id.isPresent()) {
             Optional<Epic> epic = taskManager.getEpicById(id.get());
             if (epic.isPresent()) {
@@ -52,14 +46,8 @@ public class EpicHandler extends BaseHttpHandler implements HttpHandler {
         }
     }
 
-    public void deleteHandler(HttpExchange exchange) throws IOException {
-        Optional<Integer> id;
-        try {
-            id = getIdFromPath(exchange);
-        } catch (NumberFormatException ex) {
-            sendNotFound(exchange, "передан некорректный id");
-            id = Optional.empty();
-        }
+    public void handleDeleteMethod(HttpExchange exchange) throws IOException {
+        Optional<Integer> id = getIdFromPath(exchange);
         if (id.isPresent()) {
             Optional<Epic> epic = taskManager.getEpicById(id.get());
             if (epic.isPresent()) {
@@ -73,7 +61,7 @@ public class EpicHandler extends BaseHttpHandler implements HttpHandler {
         }
     }
 
-    public void createHandler(HttpExchange exchange) throws IOException {
+    public void handlePostMethod(HttpExchange exchange) throws IOException {
         String requestBody = getRequestBody(exchange);
         try {
             Epic epic = gson.fromJson(requestBody, Epic.class);

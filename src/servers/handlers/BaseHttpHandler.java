@@ -86,10 +86,17 @@ public class BaseHttpHandler {
         }
     }
 
-    protected Optional<Integer> getIdFromPath(HttpExchange exchange) throws NumberFormatException {
+    protected Optional<Integer> getIdFromPath(HttpExchange exchange) throws IOException {
         String[] pathParts = exchange.getRequestURI().getPath().split("/");
         if (("subtasks".equals(pathParts[1]) || "tasks".equals(pathParts[1]) || "epics".equals(pathParts[1])) && pathParts.length == 3) {
-            return Optional.of(Integer.parseInt(pathParts[2]));
+            try {
+                return Optional.of(Integer.parseInt(pathParts[2]));
+            } catch (NumberFormatException exception) {
+                exchange.sendResponseHeaders(400, 0);
+                try (OutputStream os = exchange.getResponseBody()) {
+                    os.write("Передан некорректный id".getBytes());
+                }
+            }
         }
         return Optional.empty();
     }
