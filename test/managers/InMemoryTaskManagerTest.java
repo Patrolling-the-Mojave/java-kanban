@@ -1,6 +1,6 @@
 package managers;
 
-
+import exceptions.OverLappingTimeException;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -24,7 +24,7 @@ public class InMemoryTaskManagerTest extends TaskManagerTest<InMemoryTaskManager
     }
 
     @Test
-    void removeEpicById_DeleteSubtasksWhenDeletingTheirEpic() {
+    void removeEpicById_DeleteSubtasksWhenDeletingTheirEpic() throws OverLappingTimeException {
         Epic epic = new Epic("epic1", "desc1", Status.NEW);
         taskManager.createNewEpic(epic);
 
@@ -40,7 +40,7 @@ public class InMemoryTaskManagerTest extends TaskManagerTest<InMemoryTaskManager
     }
 
     @Test
-    void remove_removeTaskFormHistory_IfDeleteHisId() {
+    void remove_removeTaskFormHistory_IfDeleteHisId() throws OverLappingTimeException {
         Task task1 = new Task("n", "d", Status.NEW, 10, "2024-01-23T23:20:21.413486");
         taskManager.createNewTask(task1);
         Epic epic1 = new Epic("n", "d", Status.NEW);
@@ -61,7 +61,7 @@ public class InMemoryTaskManagerTest extends TaskManagerTest<InMemoryTaskManager
     }
 
     @Test
-    void delete_deleteSubtaskFromHistory_ifDeleteHisEpic() {
+    void delete_deleteSubtaskFromHistory_ifDeleteHisEpic() throws OverLappingTimeException {
         Epic epic1 = new Epic("n", "d", Status.NEW);
         taskManager.createNewEpic(epic1);
         SubTask subTask1 = new SubTask("n", "d", Status.NEW, 1, 10, "2024-01-23T23:20:21.413486");

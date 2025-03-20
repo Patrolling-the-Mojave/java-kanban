@@ -108,6 +108,7 @@ public class Task {
         return description;
     }
 
+
     public String convertToCSV() {
         if (startTime != null) {
             return String.format("%d,%s,%s,%s,%s,%d,%s", id, type, taskName, status, description, duration.toMinutes(), startTime);

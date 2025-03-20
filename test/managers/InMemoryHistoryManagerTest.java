@@ -1,5 +1,6 @@
 package managers;
 
+import exceptions.OverLappingTimeException;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -22,16 +23,17 @@ public class InMemoryHistoryManagerTest {
     }
 
     public Task buildTask() {
-        return new Task("name", "description", Status.NEW,10,"2025-01-23T23:20:21.413486");
+        return new Task("name", "description", Status.NEW, 10, "2025-01-23T23:20:21.413486");
     }
 
+
     @Test
-    void remove_RemoveTaskFromHistory_IfCalledRemoveMethodInHistoryManager() {
-        Task task1 = new Task("n", "d", Status.NEW,10,"2024-01-23T23:20:21.413486");
+    void remove_RemoveTaskFromHistory_IfCalledRemoveMethodInHistoryManager() throws OverLappingTimeException {
+        Task task1 = new Task("n", "d", Status.NEW, 10, "2024-01-23T23:20:21.413486");
         taskManager.createNewTask(task1);
         Epic epic = new Epic("n", "d", Status.NEW);
         taskManager.createNewEpic(epic);
-        SubTask subTask1 = new SubTask("n", "d", Status.NEW, 2,10,"2025-01-23T23:20:21.413486");
+        SubTask subTask1 = new SubTask("n", "d", Status.NEW, 2, 10, "2025-01-23T23:20:21.413486");
         taskManager.createNewSubTask(subTask1);
 
         taskManager.getTaskById(1);
@@ -46,13 +48,14 @@ public class InMemoryHistoryManagerTest {
         Assertions.assertEquals(history, taskManager.getHistory());
     }
 
+
     @Test
-    void add_AddNodeOnTheTop_ifAlreadyInHistoryAndCalledGetMethod() {
-        Task task1 = new Task("n", "d", Status.NEW,10,"2023-01-23T23:20:21.413486");
+    void add_AddNodeOnTheTop_ifAlreadyInHistoryAndCalledGetMethod() throws OverLappingTimeException {
+        Task task1 = new Task("n", "d", Status.NEW, 10, "2023-01-23T23:20:21.413486");
         taskManager.createNewTask(task1);
         Epic epic1 = new Epic("n", "d", Status.NEW);
         taskManager.createNewEpic(epic1);
-        SubTask subTask1 = new SubTask("n", "d", Status.NEW, 2,10,"2025-01-23T23:20:21.413486");
+        SubTask subTask1 = new SubTask("n", "d", Status.NEW, 2, 10, "2025-01-23T23:20:21.413486");
         taskManager.createNewSubTask(subTask1);
 
         taskManager.getTaskById(1);
@@ -65,9 +68,10 @@ public class InMemoryHistoryManagerTest {
         Assertions.assertEquals(tasks, taskManager.getHistory());
     }
 
+
     @Test
-    void increase_sizeWillIncrease_ifNodeISCreated() {
-        Task task1 = new Task("n", "d", Status.NEW,10,"2025-01-23T23:20:21.413486");
+    void increase_sizeWillIncrease_ifNodeISCreated() throws OverLappingTimeException {
+        Task task1 = new Task("n", "d", Status.NEW, 10, "2025-01-23T23:20:21.413486");
         taskManager.createNewTask(task1);
         Epic epic1 = new Epic("n", "d", Status.NEW);
         taskManager.createNewEpic(epic1);
@@ -79,7 +83,6 @@ public class InMemoryHistoryManagerTest {
 
         taskManager.removeTaskById(1);
         Assertions.assertEquals(1, historyManager.getSize());
-
     }
 
 

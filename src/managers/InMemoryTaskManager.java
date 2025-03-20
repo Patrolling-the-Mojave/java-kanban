@@ -1,6 +1,5 @@
 package managers;
 
-
 import exceptions.OverLappingTimeException;
 import tasks.Epic;
 import tasks.Status;
@@ -82,20 +81,29 @@ public class InMemoryTaskManager implements TaskManager {
 
     @Override
     public Optional<Task> getTaskById(int id) {
-        historyManager.add(tasks.get(id));
-        return Optional.ofNullable(tasks.get(id));
+        Task task = tasks.get(id);
+        if (task != null) {
+            historyManager.add(task);
+        }
+        return Optional.ofNullable(task);
     }
 
     @Override
     public Optional<SubTask> getSubtaskById(int id) {
-        historyManager.add(subTasks.get(id));
-        return Optional.ofNullable(subTasks.get(id));
+        SubTask subTask = subTasks.get(id);
+        if (subTask != null) {
+            historyManager.add(subTask);
+        }
+        return Optional.ofNullable(subTask);
     }
 
     @Override
     public Optional<Epic> getEpicById(int id) {
-        historyManager.add(epics.get(id));
-        return Optional.ofNullable(epics.get(id));
+        Epic epic = epics.get(id);
+        if (epic != null) {
+            historyManager.add(epic);
+        }
+        return Optional.ofNullable(epic);
     }
 
     @Override
@@ -176,7 +184,7 @@ public class InMemoryTaskManager implements TaskManager {
         epics.put(epic.getId(), epic);
     }
 
-    public void updateEpicParameters(Epic epic) {
+    protected void updateEpicParameters(Epic epic) {
         updateEpicStatus(epic);
         setEpicTime(epic);
     }
@@ -229,14 +237,18 @@ public class InMemoryTaskManager implements TaskManager {
 
     @Override
     public void removeTaskById(int id) {
-        prioritizedTasks.remove(tasks.get(id));
+        if (tasks.get(id).getStartTime() != null) {
+            prioritizedTasks.remove(tasks.get(id));
+        }
         tasks.remove(id);
         historyManager.remove(id);
     }
 
     @Override
     public void removeSubtaskById(int id) {
-        prioritizedTasks.remove(subTasks.get(id));
+        if (subTasks.get(id).getStartTime() != null) {
+            prioritizedTasks.remove(subTasks.get(id));
+        }
         epics.get(subTasks.get(id).getEpicId()).removeSubtask(id);
         updateEpicStatus(epics.get(subTasks.get(id).getEpicId()));
         subTasks.remove(id);
@@ -245,7 +257,6 @@ public class InMemoryTaskManager implements TaskManager {
 
     @Override
     public void removeEpicById(int id) {
-        prioritizedTasks.remove(epics.get(id));
         epics.get(id).getSubtaskIds().stream()
                 .peek(subTasks::remove)
                 .forEach(historyManager::remove);
